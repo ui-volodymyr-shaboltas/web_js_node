@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+
+	<title>DataTables example</title>
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+
+	<script type="text/javascript" language="javascript" src="/media/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="/media/js/jquery.dataTables.js"></script>
+	<!--<script type="text/javascript" language="javascript" src="/js/dataTables.tableTools.js"></script>
+	<script type="text/javascript" language="javascript" src="/js/dataTables.editor.js"></script> 
+	<script type="text/javascript" language="javascript" src="popup.js"></script>-->
+	<script type="text/javascript" language="javascript" src="script.js"></script>
+</head>
+
+<body>
+	<div id='headermenu'>
+  <ul class='tabs'>
+    <li class='tab'><a href='#tab1'>Regulatory</a></li>
+    <li class='tab'><a href='#tab2'>DB</a></li>
+    <li class='tab'><a href='#tab3'>Export</a></li>
+  </ul>
+  </br>
+  <div id='tab1'>
+    <p>Main page.</p>
+    
+  </div>
+  <div id='tab2'>
+    <p>Regulatory DB.</p>
+    <div id="cont_ins"></div>
+  </div>
+  <div id='tab3'>
+    <p>Export.</p>
+    <div id="modal" style="border:3px solid black; background-color:#9999ff; padding:25px; font-size:150%; text-align:center; display:none;">
+	This is a modal popup!<br><br>
+	<input type="button" value="OK" onClick="Popup.hide('modal')">
+</div>
+
+<a href="#" onclick="Popup.showModal('modal');return false;">Show Modal Popup</a>
+<br>
+<a href="#" onclick="Popup.showModal('modal',null,null,{'screenColor':'#99ff99','screenOpacity':.6});return false;">Show Modal Popup With A Custom Screen</a>
+  </div>
+</body>
+</html>
+
+
