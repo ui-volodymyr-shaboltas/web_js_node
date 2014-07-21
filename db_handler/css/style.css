@@ -183,3 +183,21 @@ padding: 0;
 	z-index: 1030;
 	position: fixed;
 }
+
+table.dataTable tr td:first-child {
+        text-align: center;
+}
+
+table.dataTable tr td:first-child:before {
+	content: "\f096";
+	font-family: FontAwesome;
+}
+
+table.dataTable tr.selected td:first-child:before {
+	content: "\f046";
+}
+.ColVis {
+    clear: left;
+    margin-bottom: 10px;
+    text-align: right;
+}

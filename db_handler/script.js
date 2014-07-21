@@ -5,9 +5,8 @@
 //};
 
 $(document).ready(function() {
-//var self = $(this);
-//if (CONT == null) {
 
+//MENU item processing
 $('ul.tabs').each(function(){
     // For each set of tabs, we want to keep track of
     // which tab is active and it's associated content
@@ -66,6 +65,66 @@ $.ajax({
 				$(this).html(' ');
 			}
 		});
+		
+
+		//var editor = new $.fn.dataTable.Editor( {} );
+	    var editor = new $.fn.dataTable.Editor( {
+			ajax: "/uptade",
+			table: "#mytable",
+			fields: [
+				//{ label: "ID", name: "ID" },
+				{ label: "CC", name: "CC" },
+				{ label: "PTP", name: "PTP" },
+				{ label: "DFS", name: "DFS" },
+				{ label: "Bandwidth", name: "Bandwidth" },
+				{ label: "Max power", name: "Max power" }
+			]
+		} );
+	    
+	    var table = $('#mytable').DataTable( {
+        "sDom": 'T<"clear">lfrtip',
+        tableTools: {
+            sRowSelect: "os",
+            aButtons: [
+                { sExtends: "editor_create", editor: editor },
+                { sExtends: "editor_edit",   editor: editor },
+                { sExtends: "editor_remove", editor: editor }
+            ]
+        }
+		} );
+	    
+		// New record
+		$('a.editor_create').on('click', function (e) {
+			e.preventDefault();
+
+			editor
+				.title( 'Create new record' )
+				.buttons( { "label": "Add", "fn": function () { editor.submit() } } )
+				.create( $(this).closest('tr') );
+		} );
+
+		// Edit record
+		$('#mytable').on('click', 'a.editor_edit', function (e) {
+			e.preventDefault();
+
+			editor
+				.title( 'Edit record' )
+				.buttons( { "label": "Update", "fn": function () { editor.submit() } } )
+				.edit( function () { 
+					console.log('test: '+table.closest('tr'));
+					return table.closest('tr') 
+					});
+		} );
+
+		// Delete a record (without asking a user for confirmation for this example)
+		$('#mytable').on('click', 'a.editor_remove', function (e) {
+			e.preventDefault();
+
+			editor
+				.message( 'Are you sure you wish to remove this record?' )
+				.buttons( { "label": "Delete", "fn": function () { editor.submit() } } )
+				.remove( $(this).closest('tr') );
+		} );
 
 		// DataTable
 		//var table = $('#mytable').DataTable( {
@@ -82,58 +141,10 @@ $.ajax({
 				//]
 			//}
 		//} );
-	    //var editor = new $.fn.dataTable.Editor( {
-			////ajax: "/uptade",
-			//table: "#mytable",
-			//fields: [
-				//{ label: "ID", name: "ID" },
-				//{ label: "CC", name: "CC" },
-				//{ label: "PTP", name: "PTP" },
-				//{ label: "DFS", name: "DFS" },
-				//{ label: "Bandwidth", name: "Bandwidth" }
-			//]
-		//} );
-	    
-	    
-			// New record
-		//$('a.editor_create').on('click', function (e) {
-			//e.preventDefault();
-
-			//editor
-				//.title( 'Create new record' )
-				//.buttons( { "label": "Add", "fn": function () { editor.submit() } } )
-				//.create();
-		//} );
-
-		//// Edit record
-		//$('#mytable').on('click', 'a.editor_edit', function (e) {
-			//e.preventDefault();
-
-			//editor
-				//.title( 'Edit record' )
-				//.buttons( { "label": "Update", "fn": function () { editor.submit() } } )
-				//.edit( $(this).closest('tr') );
-		//} );
-
-		//// Delete a record (without asking a user for confirmation for this example)
-		//$('#mytable').on('click', 'a.editor_remove', function (e) {
-			//e.preventDefault();
-
-			//editor
-				//.message( 'Are you sure you wish to remove this record?' )
-				//.buttons( { "label": "Delete", "fn": function () { editor.submit() } } )
-				//.remove( $(this).closest('tr') );
-		//} );
-			
-	    
-		var table = $('#mytable').DataTable( 
-
-
-		// {
+		//var table = $('#mytable').DataTable( 
+		//{
 			//dom: "Tfrtip",
-
 			//tableTools: {
-				//sRowSelect: "ID",
 				//aButtons: [
 					//{ sExtends: "editor_create", editor: editor },
 					//{ sExtends: "editor_edit",   editor: editor },
@@ -141,16 +152,21 @@ $.ajax({
 				//]
 			//}
 		//} 
-		);
+		//);
+		 
 
-	//$( tableTools.fnContainer() ).insertAfter('div.info');
-		// DataTable scrolled
-		//var table = $('#mytable').DataTable( {
-        //"scrollY": "300px",
-        //"scrollX": "100%",
-        //"scrollCollapse": true,
-        //"paging": false
-    //} );
+
+			
+	   
+
+		//$( tableTools.fnContainer() ).insertAfter('div.info');
+			//// DataTable scrolled
+			//var table = $('#mytable').DataTable( {
+			//"scrollX": "300px",
+			//"scrollY": "300px",
+			//"scrollCollapse": true,
+			//"paging": false
+		//} );
     
 		
 
@@ -245,8 +261,10 @@ function CreateTableView(objArray, theme, enableHeader) {
 			if (index != 'ID' ) //console.log("id= "+array[i].ID);
 				str += '<td>' + array[i][index] + '</td>';
             else
-				str += '<td><div class="ed_del_div"><button id="'+ array[i].ID +'" onClick="edit_onclick(this)">Edit</button>'+
-				'<button id="del'+ array[i].ID +'" onClick="delete_onclick(this)">Delete</button></div></td>';
+				str += '<td id="'+ array[i].ID +'"><div class="ed_del_div">'+
+				//'<button id="'+ array[i].ID +'" onClick="edit_onclick(this)">Edit</button>'+
+				//'<button id="del'+ array[i].ID +'" onClick="delete_onclick(this)">Delete</button>'+
+				'</div></td>';
         }
         str += '</tr>';
     }
@@ -282,7 +300,7 @@ function edit_onclick(clicked)
 				console.log('objArray '+objArray);
 				
 				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">'+
-				'<form id="edit" action="update" method="post">';
+				'<form id="edit">';
 					//<!-- contact us form -->
 				var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
@@ -300,10 +318,8 @@ function edit_onclick(clicked)
 					}
 				}
 				
-				str += '<input type="submit" value="Submit"></form>';
+				str += '<button  id="submit" onClick="confirmSubmit()">Submit</button></form>';
 				str += '<div class="fancybox-close popupContainer" id="close"> </div></div></div>';
-				
-				
 				//$('#cont_ins').append(str);
 				//Popup.showModal('abc');//return false;
 				popup_show($('#cont_ins'), str, 'abc');
@@ -335,9 +351,15 @@ function edit_onclick(clicked)
     //alert(clicked_id);
 }
 
+function showValues() {
+    var str = $( "form" ).serializeObject();
+    console.log( 'form serialize: ' + JSON.stringify(str) );
+  }
+
 function confirmSubmit()
 {
-
+	var str = $( "form" ).serializeObject();
+	updateData(str);
 }
 
 function updateData(objArr)
@@ -358,10 +380,6 @@ function updateData(objArr)
 			}
 		});
 	}
-	else
-		$.ajax({
-			url : "/"
-		});
 }
 				
 //function to display Popup
@@ -394,6 +412,11 @@ function checkParent(t, id){
 			return false
 		 }
 		 else if(t==document.getElementById('close'))
+		 {
+			document.getElementById(id).remove();
+			return true
+		 }
+		 else if(t==document.getElementById('submit'))
 		 {
 			document.getElementById(id).remove();
 			return true
