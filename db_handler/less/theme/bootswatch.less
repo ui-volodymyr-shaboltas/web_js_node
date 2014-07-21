@@ -1,0 +1,520 @@
+// Cerulean 3.1.1
+// Bootswatch
+// -----------------------------------------------------
+
+.btn-shadow(@color) {
+  #gradient > .vertical-three-colors(lighten(@color, 8%), @color, 60%, darken(@color, 4%));
+  filter: none;
+  border-bottom: 1px solid darken(@color, 10%);
+}
+
+// List group =================================================================
+.list-group-item.active{
+  .btn-shadow(@list-group-active-bg);
+}
+
+// Navbar =====================================================================
+
+.navbar {
+  .btn-shadow(@navbar-default-bg);
+  filter: none;
+  .box-shadow(0 1px 10px rgba(0, 0, 0, 0.1));
+
+  &-default {
+
+    .badge {
+      background-color: #fff;
+      color: @navbar-default-bg;
+    }
+  }
+
+  &-inverse {
+    #gradient > .vertical-three-colors(lighten(@navbar-inverse-bg, 8%), lighten(@navbar-inverse-bg, 4%), 60%, darken(@navbar-inverse-bg, 2%));
+    filter: none;
+    border-bottom: 1px solid darken(@navbar-inverse-bg, 10%);
+
+    .badge {
+      background-color: #fff;
+      color: @navbar-inverse-bg;
+    }
+  }
+
+  .navbar-nav > li > a,
+  &-brand {
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: @grid-float-breakpoint-max) {
+
+  .navbar {
+
+    .dropdown-header {
+      color: #fff;
+    }
+  }
+}
+
+// Buttons ====================================================================
+
+.btn {
+
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+
+  .caret {
+    border-top-color: #fff;
+  }
+}
+
+.btn-default {
+  
+  .btn-shadow(@btn-default-bg);
+
+  &:hover {
+    color: @btn-default-color;
+  }
+
+  .caret {
+    border-top-color: @text-color;
+  }
+}
+
+.btn-default {
+  .btn-shadow(@btn-default-bg);
+}
+
+.btn-primary {
+  .btn-shadow(@btn-primary-bg);
+}
+
+.btn-success {
+  .btn-shadow(@btn-success-bg);
+}
+
+.btn-info {
+  .btn-shadow(@btn-info-bg);
+}
+
+.btn-warning {
+  .btn-shadow(@btn-warning-bg);
+}
+
+.btn-danger {
+  .btn-shadow(@btn-danger-bg);
+}
+
+.bg-primary {
+  .btn-shadow(@brand-primary);
+}
+.bg-success {
+  .btn-shadow(@state-success-bg);
+}
+.bg-info {
+  .btn-shadow(@state-info-bg);
+}
+.bg-warning {
+  .btn-shadow(@state-warning-bg);
+}
+.bg-danger {
+  .btn-shadow(@state-danger-bg);
+}
+
+// Typography =================================================================
+
+.text-primary,
+.text-primary:hover {
+  color: @brand-primary;
+}
+
+.text-success,
+.text-success:hover {
+  color: @brand-success;
+}
+
+.text-danger,
+.text-danger:hover {
+  color: @brand-danger;
+}
+
+.text-warning,
+.text-warning:hover {
+  color: @brand-warning;
+}
+
+.text-info,
+.text-info:hover {
+  color: @brand-info;
+}
+
+
+table,
+.table {
+
+  a {
+    text-decoration: underline;
+  }
+
+  .success,
+  .warning,
+  .danger,
+  .info {
+    color: #fff;
+
+    a {
+      color: #fff;
+    }
+  }
+}
+
+// Forms ======================================================================
+
+
+.has-warning {
+  .help-block,
+  .control-label {
+    color: @brand-warning;
+  }
+
+  .form-control,
+  .form-control:focus {
+    border: 1px solid @brand-warning;
+  }
+}
+
+.has-error {
+  .help-block,
+  .control-label {
+    color: @brand-danger;
+  }
+
+  .form-control,
+  .form-control:focus {
+    border: 1px solid @brand-danger;
+  }
+}
+
+.has-success {
+  .help-block,
+  .control-label {
+    color: @brand-success;
+  }
+
+  .form-control,
+  .form-control:focus {
+    border: 1px solid @brand-success;
+  }
+}
+
+// Navs =======================================================================
+
+.nav-pills {
+
+  & > li > a {
+    border-radius: 0;
+  }
+}
+
+.dropdown-menu {
+
+  & > li > a:hover,
+  & > li > a:focus {
+    background-image: none;
+  }
+}
+
+// Indicators =================================================================
+
+.alert {
+  border: none;
+
+  .alert-link {
+    text-decoration: underline;
+  }
+
+  .close {
+    text-decoration: none;
+    opacity: 0.4;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}
+
+.label {
+  border-radius: 0;
+}
+
+.navbar-alert + .btn,
+.navbar-alert + .navbar-alert,
+.btn + .navbar-alert,
+.btn + .btn{
+  margin-left: 5px;
+}
+
+.navbar-alert {
+  .button-size(@padding-base-vertical+1; @padding-base-horizontal; @font-size-base; @line-height-base; @border-radius-base);
+  .navbar-vertical-align(@input-height-base);
+  vertical-align: middle;
+  display: inline-block;
+}
+
+// Progress bars ==============================================================
+
+.progress {
+  height: 8px;
+  .box-shadow(none);
+  .progress-bar {
+    font-size: 8px;
+    line-height: 8px;
+  }
+}
+// Containers =================================================================
+
+// SlickGrid ==================================================================
+
+.ui-table .tbl .slick-header-columns {
+  &,
+  *,
+  *:before,
+  *:after {
+    -webkit-box-sizing: content-box;
+  }
+}
+
+//fix for all browsers - headers cells in SlickGrid have no left/right paddings anymore:
+.slick-header-column{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/** 
+ * Height Hack for SlickGrid 
+ * now we can set margins and paddings for rows 
+ * this will also allow to set different height for rows
+ */
+.grid-canvas{
+  height: auto !important;
+}
+
+.slick-row {
+  position: relative !important;
+  top: 0 !important;
+
+  .slick-cell{
+    height: 100% !important;
+  }
+
+  &.slick-extra-height {
+    .generate-heights(40, 250, 10);
+
+    .generate-heights(@counter, @max, @step) when (@counter <= @max) {
+      &.h@{counter} {
+        height: ceil(( @slick-extra-height-medium * @counter/100 )) !important;
+
+        .indicator-big{
+          @sz: min( 32, (@counter - 1) );
+          
+          height: @sz;
+          width: @sz;
+          margin: ((@counter - @sz)/2 - 2px) auto;
+        }
+      }
+
+      .generate-heights( (@counter + @step), @max, @step); // next iteration
+    }
+
+  }
+}
+/** Height Hack for SlickGrid. END */
+
+.sell-wrap.required:before {
+  border: 1px solid @brand-danger;
+  border-radius: ceil(@border-radius-small / 2);
+  content: " ";
+  .absolute-stretched();
+}
+
+.ui-table.readonly .sell-wrap.required:before {
+  border: none;
+}
+
+.slick-cell.l0 {
+  border-left: 1px dotted silver;
+}
+
+.compact{
+  .tbl {
+    float: none;
+    min-height: 30px;
+    width: 100% !important;
+  }
+  .slick-header {
+    height: 0;
+  }
+  .grid-canvas {
+    width: auto !important;
+  }
+
+  .slick-viewport {
+    overflow: visible !important;
+  }
+
+  .slick-row {
+    border-left: 1px dotted @slickgrid-border-color;
+    //border-right: 1px dotted @slickgrid-border-color;
+    border-top: 1px solid @slickgrid-border-color;
+    height: auto !important;
+    margin-bottom: 0 !important;
+    float: left;
+
+    &:last-child{
+      border-bottom: 1px solid @slickgrid-border-color;
+    }
+
+    /*&:before{
+      background-color: @slickgrid-compact-col-header-color;
+      bottom: 0;
+      content: " ";
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: (@slickgrid-compact-col-header-width - (@slickgrid-compact-col-header-padding*2) );
+    }*/
+  }
+  
+  .slick-cell {
+    //border-right-width: 0;
+    border-style: dotted;
+    left: 0 !important;
+    overflow: visible;
+    padding-left: @slickgrid-compact-col-header-width + 24px;
+    position: relative;
+    width: 100% !important;
+    min-height: 30px;
+    float: left;
+
+    &.editable{
+      padding-left: @slickgrid-compact-col-header-width - 6px;
+    }
+
+    &.l0{
+      border-left-color: transparent;
+    }
+
+    &:before{
+      border-right: 1px dotted @slickgrid-border-color-bold;
+      content: "column name";
+      float: left;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background-color: @slickgrid-compact-col-header-color;
+      overflow: hidden;
+      padding: 0 @slickgrid-compact-col-header-padding;
+      position: absolute;
+      text-overflow: ellipsis;
+      width: @slickgrid-compact-col-header-width - 8px;
+    }
+
+    &:last-child{
+      border-bottom-width: 0;
+
+      &:before{
+        border-bottom-width: 0;
+      }
+    }
+  }
+
+  &.half .slick-cell {
+    width: 50% !important;
+
+    &:nth-child(2n+1) {
+      clear: both;
+    }
+  }
+  
+  &.third .slick-cell {
+    width: 33.3333% !important;
+
+    &:nth-child(3n+1) {
+      clear: both;
+    }
+  }
+
+  &.config-table{
+    .slick-cell {
+      min-height: 36px;
+
+      .btn.edit-btn{
+        left: @slickgrid-compact-col-header-width - 6px;
+        right: auto !important;
+      }
+
+      .cell_error_sign{
+        right: 8px;
+      }
+    }
+
+    .slick-cell.l0 {
+      width: 100% !important;
+      min-height: 30px;
+      padding-left: 0;
+      
+      .btn-toolbar{
+        text-align: right;
+        width: @slickgrid-compact-col-header-width - 11px;
+        margin-left: 0;
+        position: relative;
+      }
+    }
+
+    .readonly_cell{
+      .slick-cell.l0 {
+        display: none !important;
+      }
+    }
+
+    &.half .slick-cell {
+      &:nth-child(2n+1) {
+        clear: none;
+      }
+      &:nth-child(2n+2) {
+        clear: both;
+      }
+    }
+    
+    &.third .slick-cell {
+      &:nth-child(3n+1) {
+        clear: none;
+      }
+      &:nth-child(3n+2) {
+        clear: both;
+      }
+    }
+
+  } 
+
+  &.no-items .tbl:before {
+    border: 1px dotted @slickgrid-border-color;
+    content: "Table have no items yet";
+    left: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+  }
+}
+
+@media (max-width: @screen-lg-min) {
+  .compact{
+    &.half .slick-cell {
+      width: 100% !important;
+    }
+    
+    &.third .slick-cell {
+      width: 100% !important;
+    }
+  }
+}

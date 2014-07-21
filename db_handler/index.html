@@ -5,7 +5,9 @@
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 	<link rel="icon" type="image/x-icon" href="favicon.ico"/>
 
-	<title>DataTables example</title>
+	<title>Regulatory DataBase</title>
+	
+	<link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css">
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
 
 	<script type="text/javascript" language="javascript" src="/media/js/jquery.js"></script>
@@ -14,35 +16,41 @@
 	<script type="text/javascript" language="javascript" src="/js/dataTables.editor.js"></script> 
 	<script type="text/javascript" language="javascript" src="popup.js"></script>-->
 	<script type="text/javascript" language="javascript" src="script.js"></script>
+	<link rel="stylesheet/less" type="text/css" href="less/cambium.less">
 </head>
 
 <body>
-	<div id='headermenu'>
-  <ul class='tabs'>
-    <li class='tab'><a href='#tab1'>Regulatory</a></li>
-    <li class='tab'><a href='#tab2'>DB</a></li>
-    <li class='tab'><a href='#tab3'>Export</a></li>
+
+<div id='top-level-menu' class="nav navbar navbar-inverse navbar-fixed-top">
+  <ul class='tabs navbar-headerv container'>
+	<li class='tab'>
+		<p class="navbar-text">           </p>
+		<p class="navbar-text divider-vertical"> </p>
+		<a class="navbar-text" href='#tab1'>Main</a>
+		<p class="navbar-text divider-vertical"> </p>
+		<a class="navbar-text" href='#tab2'>Regulatory DB</a>
+		<p class="navbar-text divider-vertical"> </p>
+		<a class="navbar-text" href='#tab3'>Export/Import</a>
+	</li>
   </ul>
-  </br>
+</div>
+ 
+<div class='contentfild'>
   <div id='tab1'>
-    <p>Main page.</p>
+    <p><b>Main page.</b></p>
     
   </div>
   <div id='tab2'>
-    <p>Regulatory DB.</p>
+    <p><b>Regulatory DB.</b></p>
     <div id="cont_ins"></div>
   </div>
   <div id='tab3'>
-    <p>Export.</p>
-    <div id="modal" style="border:3px solid black; background-color:#9999ff; padding:25px; font-size:150%; text-align:center; display:none;">
-	This is a modal popup!<br><br>
-	<input type="button" value="OK" onClick="Popup.hide('modal')">
-</div>
-
-<a href="#" onclick="Popup.showModal('modal');return false;">Show Modal Popup</a>
-<br>
-<a href="#" onclick="Popup.showModal('modal',null,null,{'screenColor':'#99ff99','screenOpacity':.6});return false;">Show Modal Popup With A Custom Screen</a>
+    <p><b>Export/Import.</b></p>
+	<input type="button" value="Export"></br>
+	<input type="button" value="Import">
   </div>
+
+</div>
 </body>
 </html>
 
