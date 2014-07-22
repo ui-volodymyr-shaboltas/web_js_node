@@ -153,11 +153,11 @@ function edit_onclick(clicked)
 				objArray[0] = JSON.parse(convData);
 				console.log('objArray '+objArray);
 				
-				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">'+
-				'<form id="edit">';
+				
 					//<!-- contact us form -->
 				var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
+				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">'+
+					'<form id="'+array[0].ID+'">';
 				for (var i = 0; i < array.length; i++) {
 					//str += (i % 2 == 0) ? '<tr id='+array[i].ID+'>' : '<tr id='+array[i].ID+'>';
 					for (var index in array[i]) {
