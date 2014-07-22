@@ -52,7 +52,21 @@
     <p><b>Regulatory DB.</b></p>
     <!--<button onClick="">New record</button>-->
     
-    <div id="cont_ins"></div>
+    <div id="cont_ins">
+		<div class="DTTT_container">
+			<a id="New_button" class="DTTT_button DTTT_button_text" onClick="showValues()">
+			<span>New</span>
+			</a>
+			<a id="Edit_button" class="DTTT_button DTTT_button_text" onClick="edit_onclick(this)">
+			<span>Edit</span>
+			</a>
+			<a id="Delete_button" class="DTTT_button DTTT_button_text" onClick="editor_onclick(this)">
+			<span>Delete</span>
+			</a>
+		</div>
+		
+    </div>
+    
   </div>
   <div id='tab3'>
     <p><b>Export/Import.</b></p>
@@ -60,7 +74,7 @@
 	<input type="button" value="Import">
   </div>
 
-</div>
+</div> 
 </body>
 </html>
 
