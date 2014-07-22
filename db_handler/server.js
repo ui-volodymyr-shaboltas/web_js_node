@@ -71,6 +71,22 @@ var json = {};
 	});
 });
 
+app.post('/test', function(req, res) {
+//create new comment 
+var jsonArray = JSON.stringify(req.body);
+//var jsonArray = req.body;
+console.log('test: '+jsonArray);
+res.end();
+});
+
+app.get('/test', function(req, res) {
+//create new comment 
+var jsonArray = JSON.stringify(req.body);
+//var jsonArray = req.body;
+console.log('test get: '+jsonArray);
+res.end();
+});
+
 app.post('/update', function(req, res) {
 //create new comment 
 var jsonArray = JSON.stringify(req.body);

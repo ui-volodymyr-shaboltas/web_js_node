@@ -59,116 +59,154 @@ $.ajax({
 		$('#mytable tfoot th').each( function () {
 			var title = $('#mytable thead th').eq( $(this).index() ).text();
 			//console.log($(this).index());
-			if ( $(this).index() > 0 ) {
+			//if ( $(this).index() > 0 ) {
 				$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-			} else {
-				$(this).html(' ');
-			}
+			//} else {
+			//	$(this).html(' ');
+			//}
 		});
 		
 
-		//var editor = new $.fn.dataTable.Editor( {} );
-	    var editor = new $.fn.dataTable.Editor( {
-			ajax: "/uptade",
-			table: "#mytable",
-			fields: [
-				//{ label: "ID", name: "ID" },
-				{ label: "CC", name: "CC" },
-				{ label: "PTP", name: "PTP" },
-				{ label: "DFS", name: "DFS" },
-				{ label: "Bandwidth", name: "Bandwidth" },
-				{ label: "Max power", name: "Max power" }
-			]
-		} );
-	    
-	    var table = $('#mytable').DataTable( {
-        "sDom": 'T<"clear">lfrtip',
-        tableTools: {
-            sRowSelect: "os",
-            aButtons: [
-                { sExtends: "editor_create", editor: editor },
-                { sExtends: "editor_edit",   editor: editor },
-                { sExtends: "editor_remove", editor: editor }
-            ]
-        }
-		} );
-	    
-		// New record
+		////var editor = new $.fn.dataTable.Editor( {} );
+	    //var editor = new $.fn.dataTable.Editor( {
+			////ajax: "/update",
+			////table: "#mytable",
+			//fields: [
+				////{ label: "ID", name: "ID" },
+				//{ label: "CC", name: "CC" },
+				//{ label: "PTP", name: "PTP" },
+				//{ label: "DFS", name: "DFS" },
+				//{ label: "Bandwidth", name: "Bandwidth" },
+				//{ label: "Max power", name: "Max power" }
+			//]
+		//} );
+		 // Set up the editor
+			  var  editor = new $.fn.dataTable.Editor( {
+					table: '#mytable',
+					fields:
+					[ {
+						label: null,
+						name: ''
+					},{
+						label: 'CC',
+						name: "CC"
+					}, {
+						label: 's',
+						name: 2
+					}, {
+						label: 'prenom:',
+						name: 3
+					}, {
+						label: 'age:',
+						name: 4
+					}, {
+						label: 'sexe:',
+						name: 5
+					}, {
+						label: 'poste:',
+						name: 6
+					}, {
+						label: 'poste:',
+						name: 7
+					}, {
+						label: 'poste:',
+						name: 8
+					}, {
+						label: 'poste:',
+						name: 9
+					}	
+					
+				],
+				ajaxUrl: {
+					create: "POST /test",
+					edit  : "PUT /test",
+					remove: "DELETE /test"
+				},
+					ajax: function ( method, url, data, successCallback, errorCallback ) {
+						
+						$.ajax( {
+						"type": "POST", 
+						"url":  "/test",
+						"data": data,
+						"dataType": "json",
+						"success": function (json) {
+							successCallback( json );
+						},
+						"error": function (xhr, error, thrown) {
+							errorCallback( xhr, error, thrown );
+							}
+						} );
+						console.log("test: "+successCallback);
+					}      
+				});
+			// New record
 		$('a.editor_create').on('click', function (e) {
 			e.preventDefault();
 
 			editor
 				.title( 'Create new record' )
 				.buttons( { "label": "Add", "fn": function () { editor.submit() } } )
-				.create( $(this).closest('tr') );
+				.create();
 		} );
 
-		// Edit record
-		$('#mytable').on('click', 'a.editor_edit', function (e) {
+			// New record
+		$('a.editor_edit').on('click', function (e) {
 			e.preventDefault();
 
 			editor
-				.title( 'Edit record' )
+				.title( 'Create new record' )
 				.buttons( { "label": "Update", "fn": function () { editor.submit() } } )
-				.edit( function () { 
-					console.log('test: '+table.closest('tr'));
-					return table.closest('tr') 
-					});
+				.create();
 		} );
-
-		// Delete a record (without asking a user for confirmation for this example)
-		$('#mytable').on('click', 'a.editor_remove', function (e) {
+		
+			// New record
+		$('a.editor_remove').on('click', function (e) {
 			e.preventDefault();
 
 			editor
-				.message( 'Are you sure you wish to remove this record?' )
+				.title( 'Create new record' )
 				.buttons( { "label": "Delete", "fn": function () { editor.submit() } } )
-				.remove( $(this).closest('tr') );
+				.create();
 		} );
+		//// Edit record
+		//$('#mytable').on('click', 'a.editor_edit', function (e) {
+			//e.preventDefault();
 
-		// DataTable
-		//var table = $('#mytable').DataTable( {
-			//"sDom": 'T<"clear">Rlfrtip',
-			//"oTableTools": {
-				//"aButtons": [
-					//"copy",
-					//"print",
-					//{
-						//"sExtends":    "collection",
-						//"sButtonText": "Save",
-						//"aButtons":    [ "csv", "xls", "pdf" ]
-					//}
-				//]
-			//}
+			//editor
+				//.title( 'Edit record' )
+				//.buttons( { "label": "Update", "fn": function () { editor.submit() } } )
+				//.edit( this );
 		//} );
-		//var table = $('#mytable').DataTable( 
-		//{
-			//dom: "Tfrtip",
-			//tableTools: {
-				//aButtons: [
-					//{ sExtends: "editor_create", editor: editor },
-					//{ sExtends: "editor_edit",   editor: editor },
-					//{ sExtends: "editor_remove", editor: editor }
-				//]
-			//}
-		//} 
-		//);
-		 
 
-
+		//// Delete a record (without asking a user for confirmation for this example)
+		//$('#mytable').on('click', 'a.editor_remove', function (e) {
+			//e.preventDefault();
+			 //showValues();
+			////editor
+				////.message( 'Are you sure you wish to remove this record?' )
+				////.buttons( { "label": "Delete", "fn": function () { editor.submit() } } )
+				////.remove( this );
+		//} );
 			
-	   
-
-		//$( tableTools.fnContainer() ).insertAfter('div.info');
-			//// DataTable scrolled
-			//var table = $('#mytable').DataTable( {
-			//"scrollX": "300px",
-			//"scrollY": "300px",
-			//"scrollCollapse": true,
-			//"paging": false
-		//} );
-    
-		
+			// Activate an inline edit on click of a table cell
+				$('#mytable').on( 'click', 'tbody td:not(:first-child)', function (e) {
+					editor.inline( this );
+				} );
+		  
+				// Initialise the DataTable
+				var table = $('#mytable').DataTable( {
+				dom: "Tfrtip",       
+				order: [ 1, 'asc' ],
+				tableTools: {
+					sRowSelect: "os",
+					sRowSelector: 'td:first-child',
+					aButtons: [
+					{ sExtends: "editor_create", editor: editor },
+					{ sExtends: "editor_edit",   editor: editor },
+					{ sExtends: "editor_remove", editor: editor }
+					]
+				}
+			} );
 
 		// Apply the filter
 		table.columns().eq( 0 ).each( function ( colIdx ) {
@@ -181,7 +219,7 @@ $.ajax({
 				}
 			});
 		});
-		//table.order( [ 1, 'asc' ], [ 2, 'asc' ] ).draw();
+		table.order( [ 1, 'asc' ], [ 2, 'asc' ] ).draw();
 		//new $.fn.dataTable.FixedColumns( table );
 		
 	}
@@ -226,16 +264,16 @@ function CreateTableView(objArray, theme, enableHeader) {
     // If the returned data is an object do nothing, else try to parse
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
  
-    var str = '<div class="container"><section><table id="mytable" class="display" cellspacing="0" width="100%">';
+    var str = '<div class="container"><table id="mytable" cellspacing="0" width="100%">';
      
     // table head
     if (enableHeader) {
         str += '<thead><tr>';
         for (var index in array[0]) {
-			if (index != 'ID' )
+			//if (index != 'ID' )
 				str += '<th>' + index + '</th>';
-			else
-				str += '<th class="myEdit"></th>';
+			//else
+				//str += '<th class="myEdit"></th>';
         }
         str += '</tr></thead>';
     }
@@ -244,9 +282,9 @@ function CreateTableView(objArray, theme, enableHeader) {
     if (enableHeader) {
         str += '<tfoot><tr>';
         for (var index in array[0]) {
-            if (index != 'ID' )
-				str += '<th>' + index + '</th>';
-			else
+            //if (index != 'ID' )
+				//str += '<th>' + index + '</th>';
+			//else
 				str += '<th></th>';
         }
         str += '</tr></tfoot>';
@@ -256,20 +294,23 @@ function CreateTableView(objArray, theme, enableHeader) {
     // table body
     str += '<tbody>';
     for (var i = 0; i < array.length; i++) {
-        str += (i % 2 == 0) ? '<tr id='+array[i].ID+'>' : '<tr id='+array[i].ID+'>';
+        str += (i % 2 == 0) ? '<tr id="row_'+ array[i].ID +'">' : '<tr id="row_'+ array[i].ID +'">';
         for (var index in array[i]) {
-			if (index != 'ID' ) //console.log("id= "+array[i].ID);
+			//if (index != 'ID' ) //console.log("id= "+array[i].ID);
 				str += '<td>' + array[i][index] + '</td>';
-            else
-				str += '<td id="'+ array[i].ID +'"><div class="ed_del_div">'+
+            //else
+				//str += '<td '+
+			    //'id="'+ 
+				//array[i].ID +
+				//'"><div class="ed_del_div">'+
 				//'<button id="'+ array[i].ID +'" onClick="edit_onclick(this)">Edit</button>'+
 				//'<button id="del'+ array[i].ID +'" onClick="delete_onclick(this)">Delete</button>'+
-				'</div></td>';
+				//'</div></td>';
         }
         str += '</tr>';
     }
     str += '</tbody>'
-    str += '</table></div></section>';
+    str += '</table></div>';
     return str;
 }
 
