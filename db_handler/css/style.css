@@ -184,10 +184,10 @@ padding: 0;
 	position: fixed;
 }
 
-table.dataTable tr td:first-child {
+table.dataTable tr td {
         text-align: center;
 }
-
+/*
 table.dataTable tr td:first-child:before {
 	content: "\f096";
 	font-family: FontAwesome;
@@ -200,4 +200,4 @@ table.dataTable tr.selected td:first-child:before {
     clear: left;
     margin-bottom: 10px;
     text-align: right;
-}
+}*/

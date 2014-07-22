@@ -45,8 +45,18 @@
  
 <div class='contentfild'>
   <div id='tab1'>
-    <p><b>Main page.</b></p>
-    
+    <div class="DTE_Header">
+    <div class="DTE_Header_Content">
+        Main page.
+    </div>
+</div>
+<div class="DTE_Form_Buttons">
+    <button>
+        TEXT-BUTTON
+    </button>
+    ...
+</div>
+
   </div>
   <div id='tab2'>
     <p><b>Regulatory DB.</b></p>
@@ -70,8 +80,14 @@
   </div>
   <div id='tab3'>
     <p><b>Export/Import.</b></p>
-	<input type="button" value="Export"></br>
-	<input type="button" value="Import">
+    <div class="DTTT_container">
+		<a id="Export_button" class="DTTT_button DTTT_button_text" onClick="">
+			<span>Export</span>
+		</a>
+		<a id="Import_button" class="DTTT_button DTTT_button_text" onClick="">
+			<span>Import</span>
+		</a>
+	</div>
   </div>
 
 </div> 

@@ -9,17 +9,17 @@ $.ajax({
 	url: "/myjson",
 	success: function(data){
 
-		$('#cont_ins').append(CreateTableView(data,"CoolTableTheme",true));
+		$('#cont_ins').append(CreateTableView(data, true));
 
 		$('#mytable tfoot th').each( function () {
 			var self = $(this);
 			var title = $('#mytable thead th').eq( self.index() ).text();
 			//console.log($(this).index());
-			if ( self.index() > 0 ) {
+			//if ( self.index() > 0 ) {
 				self.html( '<input type="text" placeholder="Search '+title+'" />' );
-			} else {
-				self.html(' ');
-			}
+			//} else {
+			//	self.html(' ');
+			//}
 		});
 
 		// Activate an inline edit on click of a table cell
@@ -29,30 +29,39 @@ $.ajax({
 		  
 				// Initialise the DataTable
 	    table = $('#mytable').DataTable( {
-				dom: "Tfrtip",
-				order: [ 1, 'asc' ],
-				tableTools: {
-					sRowSelect: "os", // "os" - one selection; "multi" - is multiselect
-					sRowSelector: 'td:first-child',
-					aButtons: []
+				//dom: "Tfrtip",
+				lengthChange: false
+				//order: [ 1, 'asc' ],
+				//tableTools: {
+				//	sRowSelect: "os", // "os" - one selection; "multi" - is multiselect
+				//	sRowSelector: 'tr',
+				//	aButtons: []
 				 /*   { "sExtends": "editor_create", "editor": editor },
 					{ "sExtends": "editor_edit",   "editor": editor },
 					{ "sExtends": "editor_remove", "editor": editor }
 					] */
-				}
+				//}
 			} );
 
+		
 		// Apply the filter
 		table.columns().eq( 0 ).each( function ( colIdx ) {
 			$( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
-				if (colIdx != 0 ) {
+				//if (colIdx != 0 ) {
 				 table
 					.column( colIdx )
 					.search( this.value )
 					.draw();
-				}
+				//}
 			});
 		});
+		
+		var tableTools = new $.fn.dataTable.TableTools( table, {
+        sRowSelect: "single",
+        aButtons: [
+        ]
+		} );
+		$( tableTools.fnContainer() ).insertBefore( '#mytable' );
 		//table.order( [ 1, 'asc' ], [ 2, 'asc' ] ).draw();
 		//new $.fn.dataTable.FixedColumns( table );
 		
@@ -61,16 +70,8 @@ $.ajax({
     
 });
 
-function CreateTableView(objArray, theme, enableHeader) {
-/*    // set optional theme parameter
-    if (theme === undefined) {
-        theme = 'mediumTable'; //default theme
-    }
- 
-    if (enableHeader === undefined) {
-        enableHeader = true; //default enable headers
-    }
- */
+function CreateTableView(objArray, enableHeader) {
+
     // If the returned data is an object do nothing, else try to parse
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
  
@@ -83,7 +84,7 @@ function CreateTableView(objArray, theme, enableHeader) {
 			if (index != 'ID' )
 				str += '<th>' + index + '</th>';
 			else
-				str += '<th class="myEdit">Select</th>';
+				str += '';//'<th class="myEdit">Select</th>';
         }
         str += '</tr></thead>';
     }
@@ -92,10 +93,10 @@ function CreateTableView(objArray, theme, enableHeader) {
     if (enableHeader) {
         str += '<tfoot><tr>';
         for (var index in array[0]) {
-            //if (index != 'ID' )
-				//str += '<th>' + index + '</th>';
-			//else
-				str += '<th></th>';
+            if (index != 'ID' )
+				str += '<th>' + index + '</th>';
+			else
+				str += '';//'<th></th>';
         }
         str += '</tr></tfoot>';
     }
@@ -104,19 +105,20 @@ function CreateTableView(objArray, theme, enableHeader) {
     str += '<tbody>';
     for (var i = 0; i < array.length; i++) {
         //str += (i % 2 == 0) ? '<tr id="row_'+ array[i].ID +'">' : '<tr id="row_'+ array[i].ID +'">';
-        str +='<tr id="'+ array[i].ID +'">';
+        str +='<tr id_rec="'+ array[i].ID +'">';
         for (var index in array[i]) {
 			if (index != 'ID' ) //console.log("id= "+array[i].ID);
 				str += '<td>' + array[i][index] + '</td>';
             else
-				str += '<td '+
+				str +='';
+				/*str += '<td '+
 			    //'id="'+ array[i].ID +'"'+
 				'>'+
 				//<div class="ed_del_div">'+
 				//'<button id="'+ array[i].ID +'" onClick="edit_onclick(this)">Edit</button>'+
 				//'<button id="del'+ array[i].ID +'" onClick="delete_onclick(this)">Delete</button>'+
 				//'</div>'+
-				'</td>';
+				'</td>';*/
         }
         str += '</tr>';
     }
@@ -127,7 +129,7 @@ function CreateTableView(objArray, theme, enableHeader) {
 
 function editor_onclick(clicked)
 {
-	var str = $('tr.DTTT_selected').find('td');
+	//var str = $('tr.DTTT_selected').find('td');
 	
 	//var table = document.getElementById('mytable').getElementsByTagName('tr.DTTT_selected');
 	//var sel_rows = table.getElementsByTagName('tr');
@@ -151,35 +153,38 @@ function edit_onclick(clicked)
 				var convData = serializeLocalObject($.parseJSON(selectData));
 				var objArray = [];
 				objArray[0] = JSON.parse(convData);
-				console.log('objArray '+objArray);
+				console.log('selectData '+selectData);
 				
 				
 					//<!-- contact us form -->
 				var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">'+
-					'<form id="'+array[0].ID+'">';
+				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">';
+					
 				for (var i = 0; i < array.length; i++) {
+					str += '<form id="edit" id_rec="'+array[0].ID+'">';
 					//str += (i % 2 == 0) ? '<tr id='+array[i].ID+'>' : '<tr id='+array[i].ID+'>';
 					for (var index in array[i]) {
+						console.log(index, ' : ', array[i][index]);
 						switch(index) {
 							case 'ID':
 								
 								break;
-							case 'CC':
-								str += '<input id="'+array[i].ID+'" type="text" name="'+index+'" value="'+array[i][index]+'" readonly>  '+index.replace("</br>","")+'</br>';
-								break;
+						//	case 'CC':
+						//		str += '<input type="text" name="'+index+'" value="'+array[i][index]+'" readonly lable="test">  '+index.replace("</br>","")+'</br>';
+						//		break;
 							default:
-									str += '<input id="'+array[i].ID+'" type="text" name="'+index+'" value="'+array[i][index]+'">  '+index.replace("</br>","")+'</br>';
+								str += '<input type="text" name="'+index+'" value="'+array[i][index]+'">  '+index.replace("</br>","")+'</br>';
 						}
 					}
+					str += '<button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
 				}
 				
-				str += '<button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
+				
 				str += '<div class="fancybox-close popupContainer" id="close"> </div></div></div>';
 				//$('#cont_ins').append(str);
 				//Popup.showModal('abc');//return false;
 				popup_show($('#cont_ins'), str, 'abc');
-				console.log('end popup_show');
+				//console.log('end popup_show');
 /*
 			},
 			error: function (jqXHR, textStatus, errorThrown)
@@ -203,32 +208,27 @@ function selectedRowFromTable(idTable) {
 	var valuelist = [];
 
     cells_count = $(idTable).find('tr.DTTT_selected').find('td').length;
-
-	for (var i=0; i<cells_count; i++) 
-	{
-		if( i===0 )
-		{
-			valuelist[i] = {
+	
+	valuelist[0] = {
 				name : "ID",
-				value: $('#mytable').find('tr.DTTT_selected').find('td')[0].parentNode.id
+				value: $('#mytable').find('tr.DTTT_selected').find('td')[0].parentNode.getAttribute("id_rec")
 			};
-		} 
-		else 
-		{
+	for (var i=1; i<=cells_count; i++) 
+	{
 		valuelist[i] = {
-			name : document.getElementsByTagName('table').mytable.rows[0].cells[i].textContent,
-			value: $(idTable).find('tr.DTTT_selected').find('td')[i].textContent
+			name : document.getElementsByTagName('table').mytable.rows[0].cells[i-1].textContent,
+			value: $(idTable).find('tr.DTTT_selected').find('td')[i-1].textContent
 			};
-		}
+		
 	}
-
+	
 	return JSON.stringify(valuelist);
 }
 
 function confirmSubmitFormData()
 {
 	var str = $( "form" ).serializeObject();
-	var id = $( "form" ).children().attr('id');
+	var id = $( "form" )/*.children()*/.attr('id_rec');
 	updateData(id, str);
 }
 
@@ -239,6 +239,7 @@ function updateData(id, objArr)
 	if (agree) {
 		updateSelectedRow(id, objArr);
 		$.extend(objArr, {ID: id});
+		//console.log('objArr ', objArr);
 		$.ajax({
 			url : "/update",
 			type: "POST",
