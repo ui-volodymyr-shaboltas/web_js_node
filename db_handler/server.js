@@ -95,11 +95,11 @@ app.post('/create', function(req, res) {
 				if (err) {
 					res.send("DB ERROR: "+err);
 				} else {
-					var json = JSON.stringify(results);
+					//var json = JSON.stringify(results);
 					
-					console.log(results.insertId);
+					console.log('insertId ', results.insertId);
 					console.log(json);
-					//res.send(json);
+					res.send(JSON.stringify(results));
 				}
 			});
 
@@ -107,7 +107,7 @@ app.post('/create', function(req, res) {
 	} else {
 		res.send("Request ERROR...");
 	}
-res.end();
+//res.end();
 });
 
 

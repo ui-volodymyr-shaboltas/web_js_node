@@ -87,7 +87,7 @@ function CreateTableView(objArray, tablename, enableHeader) {
     // If the returned data is an object do nothing, else try to parse
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 	
-	console.log('test '+array);
+	//console.log('test '+array);
     var str = '<div class="container"><table id="'+tablename+'" cellspacing="0" width="100%">';
      
     // table head
@@ -284,6 +284,24 @@ function createData(id, objArr, tablename)
 			data : objArr,
 			success: function(data, textStatus, jqXHR)
 			{
+				var cells_count = document.getElementsByTagName('thead').item('tr').children[0].children.length;
+				var array = typeof data != 'object' ? JSON.parse(data) : data;
+				//console.log('data - response from server: ', data);
+				//console.log('data.insertId - response from server: ', array.insertId);
+				//id = array.insertId;
+				objArr.ID = array.insertId;
+        		var str ='<tr id_rec="'+ objArr.ID +'">';
+				for (var i=0; i<cells_count; i++) {
+					var nameCell = document.getElementsByTagName('thead').item('tr').children[0].children[i].textContent;
+					//if (index != 'ID' ) //console.log("id= "+array[i].ID);
+						str += '<td>' + objArr[nameCell] + '</td>';
+		            //else
+					//	str +='';
+					//console.log(nameCell,":", objArr[nameCell]);
+				}
+		        str += '</tr>';
+				console.log('Str: ', str);
+				gtable.$('#tbody').add(str);
 				//data - response from server
 			},
 			error: function (jqXHR, textStatus, errorThrown)
