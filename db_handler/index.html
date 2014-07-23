@@ -6,13 +6,14 @@
 	<link rel="icon" type="image/x-icon" href="favicon.ico"/>
 
 	<title>Regulatory DataBase</title>
-	<link rel="stylesheet" type="text/css" href="/css/style.css">
-	<link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css">
-	<link rel="stylesheet" type="text/css" href="/css/dataTables.tableTools.css">
-	<link rel="stylesheet" type="text/css" href="/css/dataTables.editor.css">
-	<link rel="stylesheet" type="text/css" href=	"//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
-
 	
+	
+	
+    <link rel="stylesheet" type="text/css" href="/css/dataTables.editor.css">
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/css/dataTables.tableTools.css">
 	
 
 	<script type="text/javascript" language="javascript" src="/media/js/jquery.js"></script>
@@ -20,9 +21,9 @@
 	<script type="text/javascript" language="javascript" src="/media/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" language="javascript" src="/js/dataTables.tableTools.js"></script>
 	<script type="text/javascript" language="javascript" src="/js/dataTables.editor.js"></script> 
-	<script type="text/javascript" language="javascript" src="/js/dataTables.editor.min.js"></script> 
+	<!--<script type="text/javascript" language="javascript" src="/js/dataTables.editor.min.js"></script> 
 	
-	<!--<script type="text/javascript" language="javascript" src="popup.js"></script>-->
+	<script type="text/javascript" language="javascript" src="popup.js"></script>-->
 	<script type="text/javascript" language="javascript" src="script.js"></script>
 	<!--<link rel="stylesheet/less" type="text/css" href="less/cambium.less">-->
 </head>
@@ -46,7 +47,7 @@
 <div class='contentfild'>
   <div id='tab1'>
     <div class="DTE_Header">
-    <div class="DTE_Header_Content">
+    <div class="DTE_Header_Content container"">
         Main page.
     </div>
 </div>
@@ -59,7 +60,7 @@
 
   </div>
   <div id='tab2'>
-    <p><b>Regulatory DB.</b></p>
+    <p><b class="container">Regulatory DB.</b></p>
     <!--<button onClick="">New record</button>-->
     
     <div id="cont_ins">
@@ -79,7 +80,7 @@
     
   </div>
   <div id='tab3'>
-    <p><b>Export/Import.</b></p>
+    <p><b class="container">Export/Import.</b></p>
     <div class="DTTT_container">
 		<a id="Export_button" class="DTTT_button DTTT_button_text" onClick="">
 			<span>Export</span>

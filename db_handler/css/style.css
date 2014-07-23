@@ -32,17 +32,27 @@ margin: 5% 20%;
 form[id="edit"]{
 	margin-left:auto;
 	margin-right:auto;
-	padding: 10px 50px;
+	padding: 5px 10px 10px 20px;
 	border: 2px solid gray;
 	border-radius: 10px;
 	/*font-family:raleway;*/
 	background-color: white;
 }
  
+.form-container label
+{
+   display: inline;
+   float: left;
+   text-align: right;
+   width: 6em;
+   margin-right: 1em;
+   margin-top: 0.4em;
+}
+
 input[type=text]{
 width:82%;
 padding: 10px;
-margin-top: 30px;
+margin-top: 5px;
 border: 1px solid #ccc;
 padding: 2px 2px 5px 5px;
 font-size: 16px;
@@ -160,6 +170,7 @@ padding: 0;
 	margin-right: auto;
 	padding-left: 15px;
 	padding-right: 15px;
+	min-width: 100px;
 }
 .contentfild {
     float: top;
@@ -187,6 +198,11 @@ padding: 0;
 table.dataTable tr td {
         text-align: center;
 }
+
+table.dataTable tr.odd {
+    background-color: #EAEAEB;
+}
+
 /*
 table.dataTable tr td:first-child:before {
 	content: "\f096";

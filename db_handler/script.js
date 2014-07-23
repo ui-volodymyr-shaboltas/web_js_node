@@ -57,7 +57,7 @@ $.ajax({
 		});
 		
 		var tableTools = new $.fn.dataTable.TableTools( table, {
-        sRowSelect: "single",
+        sRowSelect: "os",
         aButtons: [
         ]
 		} );
@@ -126,7 +126,7 @@ function CreateTableView(objArray, enableHeader) {
     str += '</table></div>';
     return str;
 }
-
+/*
 function editor_onclick(clicked)
 {
 	//var str = $('tr.DTTT_selected').find('td');
@@ -138,7 +138,7 @@ function editor_onclick(clicked)
 	alert(clicked.id+' - pressed');
 	//onewind();
 }
-
+*/
 function edit_onclick(clicked)
 {
 /*
@@ -156,27 +156,25 @@ function edit_onclick(clicked)
 				console.log('selectData '+selectData);
 				
 				
-					//<!-- contact us form -->
+				//<!-- editor form -->
 				var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">';
 					
 				for (var i = 0; i < array.length; i++) {
-					str += '<form id="edit" id_rec="'+array[0].ID+'">';
+					str += '<form id="edit" class="form-container" id_rec="'+array[0].ID+'"><b>Edit form:</b></br>';
 					//str += (i % 2 == 0) ? '<tr id='+array[i].ID+'>' : '<tr id='+array[i].ID+'>';
 					for (var index in array[i]) {
 						console.log(index, ' : ', array[i][index]);
 						switch(index) {
 							case 'ID':
-								
+								//DO NOTHING
 								break;
-						//	case 'CC':
-						//		str += '<input type="text" name="'+index+'" value="'+array[i][index]+'" readonly lable="test">  '+index.replace("</br>","")+'</br>';
-						//		break;
 							default:
-								str += '<input type="text" name="'+index+'" value="'+array[i][index]+'">  '+index.replace("</br>","")+'</br>';
+								str += '<label for="'+index+'">'+index.replace("</br>","")+': </label>'
+								str += '<input type="text" name="'+index+'" value="'+array[i][index]+'">';
 						}
 					}
-					str += '<button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
+					str += '</br><button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
 				}
 				
 				
@@ -228,7 +226,7 @@ function selectedRowFromTable(idTable) {
 function confirmSubmitFormData()
 {
 	var str = $( "form" ).serializeObject();
-	var id = $( "form" )/*.children()*/.attr('id_rec');
+	var id = $( "form" ).attr('id_rec');
 	updateData(id, str);
 }
 
@@ -260,7 +258,7 @@ function updateSelectedRow(id, array) {
 	
 	//var id = array.ID;
 	//console.log('id: ', id);
-	var i = 1;
+	var i = 0;
 	for (var index in array) { 
 		//if (index != 'ID') {
 			//console.log(index,' ', array[index]);
