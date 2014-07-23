@@ -23,83 +23,106 @@ var connection = mysql.createConnection({
 });
 
 app.use(express.static(__dirname));
-// Config
-//app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-//app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/myjson', function(req, res){
-	
+app.get('/getdb', function(req, res){
+	var tablename = req.query['tablename'];
+	console.log('req.tablename: '+tablename);
 	var json = {};
-	/*присвой в переменную json твой вывод из базы данных*/
-	connection.query('SELECT * FROM regulatory', function(err, rows) {
-	if (err) { 
-		connection.rollback(function() {
-		  throw err;
+	if(tablename) {
+		/*присвой в переменную json твой вывод из базы данных*/
+		connection.query('SELECT * FROM '+tablename, function(err, rows) {
+		if (err) {
+			res.send("DB ERROR: "+err);
+			/*connection.rollback(function() {
+			  throw err;
+			});*/
+		} else {
+			res.send(JSON.stringify(rows));
+			//callback(null,result[0].hexcode);
+		}
 		});
-	} else {
-		//json=JSON.stringify({ a: 1 });\
-		console.log('\nJSON DB sent!');
-		res.send(JSON.stringify(rows));
+    } else {
+		console.log('tablename is '+tablename);
+	}
+});
+
+app.post('/create', function(req, res) {
+	var tablename = req.query['tablename'];
+	console.log('create.tablename: '+tablename);
+	var jsonArray = JSON.stringify(req.body);
+	console.log('objArray '+jsonArray);
+	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
+	var recID=array['ID'];
+
+	if (recID == 'new' ) {
+		console.log('jsonArray.ID '+ recID);
+
+		var q = "UPDATE " + tablename + " SET ";
+		var q = "INSERT INTO " + tablename + " (";
 		
-	}
-	});
-    
-  
-  //res.send('hello world');
-});
+		//console.log('array[1] '+$.parseJSON(JSON.stringify(req.body)));
+		var i=0;
+		for (var index in array) {
+			//console.log('index '+index);
+			if ( index != 'ID' ) {
+				if (i > 0)
+					q += ","
+				q += " `"+index+"`";
+			}
+			i++;
+		}
+		q += ") VALUES(";
+		i=0;//iterator
+		for (var index in array) {
+			//console.log('index '+index);
+			if ( index != 'ID' ) {
+				if (i > 0)
+					q += ","
+				q += "\""+array[index]+"\"";
+				
+			}
+			i++;
+		}
 
-app.post('/get', function(req, res) {
-//render post
+		q += ")";
+		console.log('query: '+q);
 
-console.log('req.body.id', req.body['id']);
-var json = {};
-	/*присвой в переменную json твой вывод из базы данных*/
-	connection.query('SELECT * FROM regulatory WHERE ID=?', req.body['id'], function(err, rows) {
-	if (err) { 
-		connection.rollback(function() {
-		  throw err;
-		});
+		connection.query(q, function (err, results, fields) {
+				if (err) {
+					res.send("DB ERROR: "+err);
+				} else {
+					var json = JSON.stringify(results);
+					
+					console.log(results.insertId);
+					console.log(json);
+					//res.send(json);
+				}
+			});
+
+		console.log('req.body.id (updated)', recID);
 	} else {
-		json=JSON.stringify(rows);
-		console.log('ROWS:\n'+json);
-		res.send(JSON.stringify(rows));
+		res.send("Request ERROR...");
 	}
-	});
-});
-
-app.post('/test', function(req, res) {
-//create new comment 
-var jsonArray = JSON.stringify(req.body);
-//var jsonArray = req.body;
-console.log('test: '+jsonArray);
 res.end();
 });
 
-app.get('/test', function(req, res) {
-//create new comment 
-var jsonArray = JSON.stringify(req.body);
-//var jsonArray = req.body;
-console.log('test get: '+jsonArray);
-res.end();
-});
 
 app.post('/update', function(req, res) {
-//create new comment 
-var jsonArray = JSON.stringify(req.body);
-//var jsonArray = req.body;
-console.log('objArray '+jsonArray);
-var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
-//console.log('array '+array);
+	var tablename = req.query['tablename'];
+	console.log('update.tablename: '+tablename);
+	var jsonArray = JSON.stringify(req.body);
+	console.log('objArray '+jsonArray);
+	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
+	var recID=array['ID'];
 
-var recID=array['ID'];
+	console.log('jsonArray.ID '+ recID);
 
-console.log('jsonArray.ID '+ recID);
-
-var q = "UPDATE regulatory" + " SET ";
+	var q = "UPDATE " + tablename + " SET ";
+	
 for (var index in array) {
 	//console.log('index '+index);
 	if ( index != 'ID' ) {
@@ -109,38 +132,53 @@ for (var index in array) {
 		
 	}
 }
+
 q += " WHERE `ID`="+recID;
 console.log('query: '+q);
+
 	connection.query(q, function (err, results, fields) {
-		if(err) { throw err; }
-		var json = JSON.stringify(results);
-		console.log(json);
-	  }
-	);
-	//if (jsonArray != null) { 
-	   //for (var i=1;i<;i++)
-	   //{ 
-		   ////Excluding the item at position
-			//if (i != position) 
-			//{
-				//list.put(jsonArray.get(i));
-			//}
-	   //} 
-  // }
-//console.log(list);
+		if (err) {
+			res.send("DB ERROR: "+err);
+		} else {
+			var json = JSON.stringify(results);
+			console.log(json);
+		}
+	});
 
-//console.log('req.param', req.param[0]);
-console.log('req.body.id (update)', recID);
-
-////return to ROOT URL
-res.writeHead(302, {
-  'Location': '/'
-  //add other headers here...
+console.log('req.body.id (updated)', recID);
+res.end();
 });
+
+app.post('/delete', function(req, res) {
+	var tablename = req.query['tablename'];
+	console.log('update.tablename: '+tablename);
+	var jsonArray = JSON.stringify(req.body);
+	console.log('objArray '+jsonArray);
+	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
+	var recID=array['ID'];
+
+	console.log('delete.ID '+ recID);
+
+	if (recID) {
+	var q = "DELETE FROM " + tablename;
+
+	q += " WHERE `ID`="+recID;
+	
+	console.log('query: '+q);
+/*
+	connection.query(q, function (err, results, fields) {
+		if (err) {
+			res.send("DB ERROR: "+err);
+		} else {
+			var json = JSON.stringify(results);
+			console.log(json);
+		}
+	});*/
+
+	console.log('req.body.id (deleted)', recID);
+	}
 res.end();
 
-
 });
-
 
 server.listen(8080);

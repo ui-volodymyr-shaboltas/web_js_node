@@ -1,49 +1,40 @@
-var editor; // use a global for the submit and return data rendering in the examples
+var gtable; // global table variable
 
 $(document).ready(function() {
+	var tablename = 'regulatory';
+	
+	menuItemProc();
 
-menuItemProc();
+	loadUserTable(tablename);
+    
+});
 
-$.ajax({
-	type: "GET",
-	url: "/myjson",
-	success: function(data){
+function loadUserTable(tablename){
+	 $.ajax({
+		type: "GET",
+		url: "/getdb?tablename="+tablename,
+		success: function(data){
+			createUserTable(data, tablename);
+	}
+	});
+}
 
-		$('#cont_ins').append(CreateTableView(data, true));
+function createUserTable(xdata, tablename){
+		
+		$('#cont_ins').append(CreateTableView(xdata, tablename, true));
 
-		$('#mytable tfoot th').each( function () {
+		$('#'+tablename+' tfoot th').each( function () {
 			var self = $(this);
-			var title = $('#mytable thead th').eq( self.index() ).text();
-			//console.log($(this).index());
-			//if ( self.index() > 0 ) {
-				self.html( '<input type="text" placeholder="Search '+title+'" />' );
-			//} else {
-			//	self.html(' ');
-			//}
+			var title = $('#'+tablename+' thead th').eq( self.index() ).text();
+			self.html( '<input type="text" placeholder="Search '+title+'" />' );
 		});
-
-		// Activate an inline edit on click of a table cell
-	/*	$('#mytable').on( 'click', 'tbody td:not(:first-child)', function (e) {
-			editor.inline(  $('#mytable').closest('tr') );
-		} );*/
 		  
 				// Initialise the DataTable
-	    table = $('#mytable').DataTable( {
-				//dom: "Tfrtip",
+	    table = $('#'+tablename).DataTable( {
 				lengthChange: false
-				//order: [ 1, 'asc' ],
-				//tableTools: {
-				//	sRowSelect: "os", // "os" - one selection; "multi" - is multiselect
-				//	sRowSelector: 'tr',
-				//	aButtons: []
-				 /*   { "sExtends": "editor_create", "editor": editor },
-					{ "sExtends": "editor_edit",   "editor": editor },
-					{ "sExtends": "editor_remove", "editor": editor }
-					] */
-				//}
 			} );
 
-		
+		gtable = table;
 		// Apply the filter
 		table.columns().eq( 0 ).each( function ( colIdx ) {
 			$( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
@@ -54,6 +45,12 @@ $.ajax({
 					.draw();
 				//}
 			});
+			$( 'a').on('click',function() {
+				 table
+					//.column( colIdx )
+					//.search( this.value )
+					.draw();
+			});
 		});
 		
 		var tableTools = new $.fn.dataTable.TableTools( table, {
@@ -61,21 +58,37 @@ $.ajax({
         aButtons: [
         ]
 		} );
-		$( tableTools.fnContainer() ).insertBefore( '#mytable' );
+		$( tableTools.fnContainer() ).insertBefore( '#'+tablename );
 		//table.order( [ 1, 'asc' ], [ 2, 'asc' ] ).draw();
 		//new $.fn.dataTable.FixedColumns( table );
 		
-	}
-	});
+		/*  **** Work with table events **** */
+		$('td').on('click',function() {
+               // var col = $(this).parent().children().index($(this));
+               // var row = $(this).parent().parent().children().index($(this).parent());
+                //console.log('Row: ' + row + ', Column: ' + col);
+                if (!document.getElementsByClassName('DTTT_selected').item('td')) {
+					$('#Edit_button').removeClass("DTTT_disabled");
+					$('#Delete_button').removeClass("DTTT_disabled");
+					// console.log('DTTT_selected');
+				} else {
+					$('#Edit_button').addClass("DTTT_disabled");
+					$('#Delete_button').addClass("DTTT_disabled");
+					// console.log('DTTT_UNselected');
+				}
+                
+                
+        });
     
-});
+}
 
-function CreateTableView(objArray, enableHeader) {
+function CreateTableView(objArray, tablename, enableHeader) {
 
     // If the returned data is an object do nothing, else try to parse
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
- 
-    var str = '<div class="container"><table id="mytable" cellspacing="0" width="100%">';
+	
+	console.log('test '+array);
+    var str = '<div class="container"><table id="'+tablename+'" cellspacing="0" width="100%">';
      
     // table head
     if (enableHeader) {
@@ -111,113 +124,107 @@ function CreateTableView(objArray, enableHeader) {
 				str += '<td>' + array[i][index] + '</td>';
             else
 				str +='';
-				/*str += '<td '+
-			    //'id="'+ array[i].ID +'"'+
-				'>'+
-				//<div class="ed_del_div">'+
-				//'<button id="'+ array[i].ID +'" onClick="edit_onclick(this)">Edit</button>'+
-				//'<button id="del'+ array[i].ID +'" onClick="delete_onclick(this)">Delete</button>'+
-				//'</div>'+
-				'</td>';*/
         }
         str += '</tr>';
     }
-    str += '</tbody>'
+    str += '</tbody>';
     str += '</table></div>';
     return str;
 }
-/*
-function editor_onclick(clicked)
+
+function new_onclick(clicked)
 {
-	//var str = $('tr.DTTT_selected').find('td');
+	var tablename = $( 'table' ).attr('id');
 	
-	//var table = document.getElementById('mytable').getElementsByTagName('tr.DTTT_selected');
-	//var sel_rows = table.getElementsByTagName('tr');
+	var labelData = selectedRowFromTable( tablename, false );
+	edit_form_creator(labelData, tablename, false);
 	
-    console.log( 'table serialize: ' + JSON.stringify(document.getElementById('mytable').getElementsByClassName('DTTT_selected')) );
-	alert(clicked.id+' - pressed');
-	//onewind();
 }
-*/
+
 function edit_onclick(clicked)
 {
-/*
-	$.ajax({
-			url : "/get",
-			type: "POST",
-			data : {id: clicked.id},
-			success: function(objArray, textStatus, jqXHR)
-			{
-				*/
-				var selectData = selectedRowFromTable( "#mytable" );
-				var convData = serializeLocalObject($.parseJSON(selectData));
-				var objArray = [];
-				objArray[0] = JSON.parse(convData);
-				console.log('selectData '+selectData);
-				
-				
-				//<!-- editor form -->
-				var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-				var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">';
-					
-				for (var i = 0; i < array.length; i++) {
-					str += '<form id="edit" class="form-container" id_rec="'+array[0].ID+'"><b>Edit form:</b></br>';
-					//str += (i % 2 == 0) ? '<tr id='+array[i].ID+'>' : '<tr id='+array[i].ID+'>';
-					for (var index in array[i]) {
-						console.log(index, ' : ', array[i][index]);
-						switch(index) {
-							case 'ID':
-								//DO NOTHING
-								break;
-							default:
-								str += '<label for="'+index+'">'+index.replace("</br>","")+': </label>'
-								str += '<input type="text" name="'+index+'" value="'+array[i][index]+'">';
-						}
-					}
-					str += '</br><button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
-				}
-				
-				
-				str += '<div class="fancybox-close popupContainer" id="close"> </div></div></div>';
-				//$('#cont_ins').append(str);
-				//Popup.showModal('abc');//return false;
-				popup_show($('#cont_ins'), str, 'abc');
-				//console.log('end popup_show');
-/*
-			},
-			error: function (jqXHR, textStatus, errorThrown)
-			{
-		 
+	var tablename = $( 'table' ).attr('id');
+
+	if (document.getElementsByClassName('DTTT_selected').item('td')) {
+		var selectData = selectedRowFromTable( tablename, true );
+		edit_form_creator(selectData, tablename, true);	
+	}
+}
+
+function edit_form_creator(selectData, tablename, edited) {
+	var convData = serializeLocalObject($.parseJSON(selectData));
+	var objArray = [];
+	objArray[0] = JSON.parse(convData);
+	console.log('ID TABLE: '+tablename);
+
+	//<!-- editor form -->
+	var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+	var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">';
+
+	for (var i = 0; i < array.length; i++) {
+		str += '<form id="edit" class="form-container" tablename="'+tablename+'" id_rec="'+array[0].ID+'"><b>Edit form:</b></br>';
+		//str += (i % 2 == 0) ? '<tr id='+array[i].ID+'>' : '<tr id='+array[i].ID+'>';
+		for (var index in array[i]) {
+			console.log(index, ' : ', array[i][index]);
+			switch(index) {
+				case 'ID':
+					//DO NOTHING
+					break;
+				default:
+					str += '<label for="'+index+'">'+index.replace("</br>","")+': </label>'
+					str += '<input type="text" name="'+index+'" value="'+array[i][index]+'">';
 			}
-		});
-		
-		*/
+		}
+		if(edited)
+			str += '</br><button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
+		else
+			str += '</br><button class="DTTT_button" id="submit" onClick="confirmCreateFormData()">Create</button></form>';
+	}
+
+	str += '<div class="fancybox-close popupContainer" id="close"> </div></div></div>';
+	popup_show($('#cont_ins'), str, 'abc');
 }
 
-function showValues() {
-    
-    var selectData = selectedRowFromTable( "#mytable" );
-    var convData = serializeLocalObject($.parseJSON(selectData));
-     
-	console.log( 'convData: '+convData);
+function delete_onclick(clicked)
+{
+	var tablename = $( 'table' ).attr('id');
+
+	if (document.getElementsByClassName('DTTT_selected').item('td')) {
+		var id = $('#'+tablename).find('tr.DTTT_selected').find('td')[0].parentNode.getAttribute("id_rec");
+		deleteData(id, tablename);
+	}
 }
 
-function selectedRowFromTable(idTable) {
+function selectedRowFromTable(tablename, selected) {
 	var valuelist = [];
-
-    cells_count = $(idTable).find('tr.DTTT_selected').find('td').length;
 	
-	valuelist[0] = {
+    cells_count = document.getElementsByTagName('thead').item('tr').children[0].children.length;
+    
+	if (selected)
+		valuelist[0] = {
+					name : "ID",
+					value: $('#'+tablename).find('tr.DTTT_selected').find('td')[0].parentNode.getAttribute("id_rec")
+				};
+	else
+		valuelist[0] = {
 				name : "ID",
-				value: $('#mytable').find('tr.DTTT_selected').find('td')[0].parentNode.getAttribute("id_rec")
+				value: 'new'
 			};
+
+	
 	for (var i=1; i<=cells_count; i++) 
 	{
-		valuelist[i] = {
-			name : document.getElementsByTagName('table').mytable.rows[0].cells[i-1].textContent,
-			value: $(idTable).find('tr.DTTT_selected').find('td')[i-1].textContent
-			};
-		
+		if (selected)
+			valuelist[i] = {
+				name : document.getElementsByTagName('table').namedItem(tablename).rows[0].cells[i-1].textContent,
+				value: $('#'+tablename).find('tr.DTTT_selected').find('td')[i-1].textContent
+				};
+		else
+			valuelist[i] = {
+				name : document.getElementsByTagName('table').namedItem(tablename).rows[0].cells[i-1].textContent,
+				value: ""
+				};
+			
 	}
 	
 	return JSON.stringify(valuelist);
@@ -227,19 +234,20 @@ function confirmSubmitFormData()
 {
 	var str = $( "form" ).serializeObject();
 	var id = $( "form" ).attr('id_rec');
-	updateData(id, str);
+	var tablename = $( "form" ).attr('tablename');
+	updateData(id, str, tablename);
 }
 
-function updateData(id, objArr)
+function updateData(id, objArr, tablename)
 {
 	var agree=confirm("Are you sure you wish to continue?");
 
 	if (agree) {
-		updateSelectedRow(id, objArr);
+		updateSelectedRow(id, objArr, tablename);
 		$.extend(objArr, {ID: id});
 		//console.log('objArr ', objArr);
 		$.ajax({
-			url : "/update",
+			url : "/update?tablename="+tablename,
 			type: "POST",
 			data : objArr,
 			success: function(data, textStatus, jqXHR)
@@ -253,21 +261,75 @@ function updateData(id, objArr)
 		});
 	}
 }
-function updateSelectedRow(id, array) {
-	//var result = {};
+
+function confirmCreateFormData()
+{
+	var str = $( "form" ).serializeObject();
+	var id = $( "form" ).attr('id_rec');
+	var tablename = $( "form" ).attr('tablename');
+	createData(id, str, tablename);
+}
+
+function createData(id, objArr, tablename)
+{
+	var agree=confirm("Are you sure you wish to continue?");
+
+	if (agree) {
+		//updateSelectedRow(id, objArr, tablename);
+		$.extend(objArr, {ID: id});
+		//console.log('objArr ', objArr);
+		$.ajax({
+			url : "/create?tablename="+tablename,
+			type: "POST",
+			data : objArr,
+			success: function(data, textStatus, jqXHR)
+			{
+				//data - response from server
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+		 
+			}
+		});
+	}
+}
+
+function deleteData(id, tablename)
+{
+	var agree=confirm("Are you sure you wish to continue?");
+
+	if (agree) {
+
+		$.ajax({
+			url : "/delete?tablename="+tablename,
+			type: "POST",
+			data : {ID: id},
+			success: function(data, textStatus, jqXHR)
+			{
+				gtable.$('tr.DTTT_selected').remove();
+				
+				//data - response from server
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+		 
+			}
+		});
+		//var rowtoremove=document.getElementsByClassName('DTTT_selected').item('tr');
+		//console.log('gtable.draw'+rowtoremove);
 	
-	//var id = array.ID;
-	//console.log('id: ', id);
+		
+	}
+}
+
+
+function updateSelectedRow(id, array, tablename) {
 	var i = 0;
 	for (var index in array) { 
-		//if (index != 'ID') {
-			//console.log(index,' ', array[index]);
-			document.getElementsByTagName('table').mytable.rows[id].children[i].textContent = array[index];
-		//}
+		document.getElementsByClassName('DTTT_selected').item('tr').children[i].textContent = array[index];
 		i++;
 	}
 };
-//
 
 /* ************* POPUP ************* */
 
@@ -314,9 +376,8 @@ function serializeLocalObject(array) {
 	var result = {};
 	
 	$.each(array, function(i, val) {
-		
 		result[val.name] = val.value;
-		});
+	});
 	
 	return JSON.stringify(result);
 };
