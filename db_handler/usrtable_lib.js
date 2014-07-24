@@ -2,39 +2,67 @@ var gtable; // global table variable
 var GDATA;
 
 function loadUserTable(tablename){
-	 $.ajax({
+	/* $.ajax({
 		type: "GET",
 		url: "/getdb?tablename="+tablename,
 		success: function(data){
 			GDATA=data;
-			
-
-			CreateHTMLTableView(data, tablename, 'usertable',true)
+			//CreateHTMLTableView(data, tablename, 'usertable',true)
 			createUserTable(data, tablename);
 
 		}
-	});
+	});*/
+	var data = {};
+	 createUserTable(data, tablename);
+	
 }
 
 function createUserTable(xdata, tablename){
-
-		$('#'+tablename+' tfoot th').each( function () {
+				// Initialise the DataTable
+	/*    table = $('#'+tablename).DataTable( {
+				//lengthChange: false
+			} );*/
+		console.log("test ", xdata);
+	    gtable = $('#myusertable').DataTable( {
+        //"processing": true,
+        //"serverSide": true,
+        //"ajax": "/data.json",
+        "ajax": "/getdb?tablename="+tablename,
+            //{"DT_RowId":1,"CC":"AM","PTP":3,"DFS":0,"Band":20,"MaxPwr":27,"MaxPwrExt":0,"eirp":0,"min_freq":2412,"max_freq":2472}
+        "columns": [
+            { "data": "CC" },
+            { "data": "PTP" },
+            { "data": "DFS" },
+            { "data": 'Band' },
+            { "data": "MaxPwr" },
+            { "data": "MaxPwrExt" },
+            { "data": "eirp" },
+            { "data": "min_freq" },
+            { "data": "max_freq" }
+/*
+            "columns": [
+            { "data": "CC" },
+            { "data": "PTP" },
+            { "data": "DFS" },
+            { "data": 'Bandwidth' },
+            { "data": "Max Pwr" },
+            { "data": "Max Pwr Ext" },
+            { "data": "EIRP" },
+            { "data": "MIN Freq" },
+            { "data": "MAX Freq" }*/
+        ]
+    } );
+/*		$('#'+tablename+' tfoot th').each( function () {
 			var self = $(this);
 			var title = $('#'+tablename+' thead th').eq( self.index() ).text();
 			self.html( '<input type="text" placeholder="Search '+title+'" />' );
-		});
-		  
-				// Initialise the DataTable
-	    table = $('#'+tablename).DataTable( {
-				//lengthChange: false
-			} );
-
-		gtable = table;
+		});*/
+		//gtable = table;
 		// Apply the filter
-		table.columns().eq( 0 ).each( function ( colIdx ) {
-			$( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function () {
+/*		gtable.columns().eq( 0 ).each( function ( colIdx ) {
+			$( 'input', gtable.column( colIdx ).footer() ).on( 'keyup change', function () {
 				//if (colIdx != 0 ) {
-				 table
+				 gtable
 					.column( colIdx )
 					.search( this.value )
 					.draw();
@@ -42,32 +70,34 @@ function createUserTable(xdata, tablename){
 			});
 			//$( 'a').on('click',function(obj) {
 			//	console.log('Pressed<a>', obj);
-/*
+
 				 table
 					//.column( colIdx )
 					//.search( this.value )
-					.draw();*/
+					.draw();
 			//});
-		});
-		
-		var tableTools = new $.fn.dataTable.TableTools( table, {
+		});*/
+		/*
+		var tableTools = new $.fn.dataTable.TableTools( gtable, {
         sRowSelect: "os",
         aButtons: [
         ]
-		} );
-		$( tableTools.fnContainer() ).insertBefore( '#'+tablename );
+		} );*/
+
+
+		/*$( tableTools.fnContainer() ).insertBefore( '#'+tablename );*/
 		//table.order( [ 1, 'asc' ], [ 2, 'asc' ] ).draw();
 		//new $.fn.dataTable.FixedColumns( table );
 		
-		$('#'+tablename+' tbody').on( 'click', 'tr', function () {
-    		console.log( 'Row index: '+table.row( this ).index() );
-		} );
+	/*	$('#'+tablename+' tbody').on( 'click', 'tr', function () {
+    		console.log( 'Row index: '+gtable.row( this ).index() );
+		} );*/
 
 		/*  **** Work with table events **** */
-		$('td').on('click',function() {
+		/*$('td').on('click',function() {
                // var col = $(this).parent().children().index($(this));
                // var row = $(this).parent().parent().children().index($(this).parent());
-                //console.log('Row: ' + row + ', Column: ' + col);
+               // console.log('Row: ' + row + ', Column: ' + col);
                 if (!document.getElementsByClassName('DTTT_selected').item('td')) {
 					$('#Edit_button').removeClass("DTTT_disabled");
 					$('#Delete_button').removeClass("DTTT_disabled");
@@ -79,7 +109,7 @@ function createUserTable(xdata, tablename){
 				}
                 
                 
-        });
+        });*/
     
 }
 
@@ -137,7 +167,6 @@ function CreateHTMLTableView(objArray, tablename, contentTarget, enableHeader) {
 function new_onclick(clicked)
 {
 	var tablename = $( 'table' ).attr('id');
-	var newData = ["AM", "3", "0", "120", "127", "0", "0", "2412", "2472"];
 	
 	var labelData = selectedRowFromTable( tablename, false );
 	edit_form_creator(labelData, tablename, false);
