@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+
+	<title>Table DataBase</title>
+	
+    <link rel="stylesheet" type="text/css" href="/css/dataTables.editor.css">
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/css/dataTables.tableTools.css">
+
+	<script type="text/javascript" language="javascript" src="usrtable.js"></script>
+</head>
+
+<body>
+<div class="DTTT_container">
+			<a id="New_button" class="DTTT_button DTTT_button_text" onClick="new_onclick(this)">
+			<span>New</span>
+			</a>
+			<a id="Edit_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="edit_onclick(this)">
+			<span>Edit</span>
+			</a>
+			<a id="Delete_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="delete_onclick(this)">
+			<span>Delete</span>
+			</a>
+		</div>
+    <div id="usertable">
+
+<table id="myusertable" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+				<th>CC</th>
+				<th>PTP</th>
+				<th>DFS</th>
+				<th>Bandwidth</th>
+				<th>Max Pwr</th>
+				<th>Max Pwr Ext</th>
+				<th>EIRP</th>
+				<th>MIN Freq.</th>
+				<th>MAX Freq.</th>
+            </tr>
+        </thead>
+ 
+        <tfoot>
+            <tr>
+				<th>CC</th>
+				<th>PTP</th>
+				<th>DFS</th>
+				<th>Bandwidth</th>
+				<th>Max Pwr</th>
+				<th>Max Pwr Ext</th>
+				<th>EIRP</th>
+				<th>MIN Freq.</th>
+				<th>MAX Freq.</th>
+            </tr>
+        </tfoot>
+    </table>
+
+	</div> 
+</body>
+</html>

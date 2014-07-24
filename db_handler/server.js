@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/getdb', function(req, res){
 	var tablename = req.query['tablename'];
 	console.log('req.tablename: '+tablename);
-	var json = {};
+	
 	if(tablename) {
 		/*присвой в переменную json твой вывод из базы данных*/
 		connection.query('SELECT * FROM '+tablename, function(err, rows) {
@@ -41,7 +41,10 @@ app.get('/getdb', function(req, res){
 			  throw err;
 			});*/
 		} else {
-			res.send(JSON.stringify(rows));
+			var json = {"draw": 1,
+  				"data": rows};
+			console.log('resp: '+JSON.stringify(json));
+			res.send(JSON.stringify(json));
 			//callback(null,result[0].hexcode);
 		}
 		});
@@ -56,10 +59,10 @@ app.post('/create', function(req, res) {
 	var jsonArray = JSON.stringify(req.body);
 	console.log('objArray '+jsonArray);
 	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
-	var recID=array['ID'];
+	var recDT_RowId=array['DT_RowDT_RowId'];
 
-	if (recID == 'new' ) {
-		console.log('jsonArray.ID '+ recID);
+	if (recDT_RowId == 'new' ) {
+		console.log('jsonArray.DT_RowId '+ recDT_RowId);
 
 		var q = "UPDATE " + tablename + " SET ";
 		var q = "INSERT INTO " + tablename + " (";
@@ -68,7 +71,7 @@ app.post('/create', function(req, res) {
 		var i=0;
 		for (var index in array) {
 			//console.log('index '+index);
-			if ( index != 'ID' ) {
+			if ( index != 'DT_RowId' ) {
 				if (i > 0)
 					q += ","
 				q += " `"+index+"`";
@@ -79,7 +82,7 @@ app.post('/create', function(req, res) {
 		i=0;//iterator
 		for (var index in array) {
 			//console.log('index '+index);
-			if ( index != 'ID' ) {
+			if ( index != 'DT_RowId' ) {
 				if (i > 0)
 					q += ","
 				q += "\""+array[index]+"\"";
@@ -97,13 +100,13 @@ app.post('/create', function(req, res) {
 				} else {
 					//var json = JSON.stringify(results);
 					
-					console.log('insertId ', results.insertId);
+					console.log('insertDT_RowId ', results.insertDT_RowId);
 					console.log(json);
 					res.send(JSON.stringify(results));
 				}
 			});
 
-		console.log('req.body.id (updated)', recID);
+		console.log('req.body.DT_RowId (updated)', recDT_RowId);
 	} else {
 		res.send("Request ERROR...");
 	}
@@ -117,15 +120,15 @@ app.post('/update', function(req, res) {
 	var jsonArray = JSON.stringify(req.body);
 	console.log('objArray '+jsonArray);
 	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
-	var recID=array['ID'];
+	var recDT_RowId=array['DT_RowId'];
 
-	console.log('jsonArray.ID '+ recID);
+	console.log('jsonArray.DT_RowId '+ recDT_RowId);
 
 	var q = "UPDATE " + tablename + " SET ";
 	
 for (var index in array) {
 	//console.log('index '+index);
-	if ( index != 'ID' ) {
+	if ( index != 'DT_RowId' ) {
 		if (index != 'CC')
 			q += ","
 		q += " `"+index+"`=\""+array[index]+"\"";
@@ -133,7 +136,7 @@ for (var index in array) {
 	}
 }
 
-q += " WHERE `ID`="+recID;
+q += " WHERE `DT_RowId`="+recDT_RowId;
 console.log('query: '+q);
 
 	connection.query(q, function (err, results, fields) {
@@ -145,7 +148,7 @@ console.log('query: '+q);
 		}
 	});
 
-console.log('req.body.id (updated)', recID);
+console.log('req.body.DT_RowId (updated)', recDT_RowId);
 res.end();
 });
 
@@ -155,17 +158,17 @@ app.post('/delete', function(req, res) {
 	var jsonArray = JSON.stringify(req.body);
 	console.log('objArray '+jsonArray);
 	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
-	var recID=array['ID'];
+	var recDT_RowId=array['DT_RowId'];
 
-	console.log('delete.ID '+ recID);
+	console.log('delete.DT_RowId '+ recDT_RowId);
 
-	if (recID) {
+	if (recDT_RowId) {
 	var q = "DELETE FROM " + tablename;
 
-	q += " WHERE `ID`="+recID;
+	q += " WHERE `DT_RowId`="+recDT_RowId;
 	
 	console.log('query: '+q);
-/*
+
 	connection.query(q, function (err, results, fields) {
 		if (err) {
 			res.send("DB ERROR: "+err);
@@ -173,9 +176,9 @@ app.post('/delete', function(req, res) {
 			var json = JSON.stringify(results);
 			console.log(json);
 		}
-	});*/
+	});
 
-	console.log('req.body.id (deleted)', recID);
+	console.log('req.body.DT_RowId (deleted)', recDT_RowId);
 	}
 res.end();
 

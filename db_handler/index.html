@@ -7,25 +7,18 @@
 
 	<title>Regulatory DataBase</title>
 	
-	
-	
-    <link rel="stylesheet" type="text/css" href="/css/dataTables.editor.css">
-	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
-	<link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.css">
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
-	<link rel="stylesheet" type="text/css" href="/css/dataTables.tableTools.css">
-	
+	<link rel="stylesheet" type="text/css" href="/css/navmenu.css">
 
 	<script type="text/javascript" language="javascript" src="/media/js/jquery.js"></script>
 	<script type="text/javascript" language="javascript" src="/js/jquery.serializeObject.js"></script>
 	<script type="text/javascript" language="javascript" src="/media/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" language="javascript" src="/js/dataTables.tableTools.js"></script>
 	<script type="text/javascript" language="javascript" src="/js/dataTables.editor.js"></script> 
-	<!--<script type="text/javascript" language="javascript" src="/js/dataTables.editor.min.js"></script> 
-	
-	<script type="text/javascript" language="javascript" src="popup.js"></script>-->
+	<script type="text/javascript" language="javascript" src="/js/dataTables.editor.min.js"></script>
+	<script type="text/javascript" language="javascript" src="usrtable_lib.js"></script>
 	<script type="text/javascript" language="javascript" src="script.js"></script>
-	<!--<link rel="stylesheet/less" type="text/css" href="less/cambium.less">-->
+
 </head>
 
 <body>
@@ -44,54 +37,28 @@
   </ul>
 </div>
  
+
 <div class='contentfild'>
-  <div id='tab1'>
-    <div class="DTE_Header">
-    <div class="DTE_Header_Content container"">
-        Main page.
-    </div>
-</div>
-<div class="DTE_Form_Buttons">
-    <button>
-        TEXT-BUTTON
-    </button>
-    ...
-</div>
-
-  </div>
-  <div id='tab2'>
-    <p><b class="container">Regulatory DB.</b></p>
-    <!--<button onClick="">New record</button>-->
-    
-    <div id="cont_ins">
-		<div class="DTTT_container">
-			<a id="New_button" class="DTTT_button DTTT_button_text" onClick="new_onclick(this)">
-			<span>New</span>
-			</a>
-			<a id="Edit_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="edit_onclick(this)">
-			<span>Edit</span>
-			</a>
-			<a id="Delete_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="delete_onclick(this)">
-			<span>Delete</span>
-			</a>
+	<div id='tab1'> 
+		<div id="navigation">
+				 <div class="navitem" rel="usertable.html">Regulatory table</div>
+				 <div class="navitem" rel="admin.html">Administration</div>
+				 <div class="navitem" rel="login.html">Login</div>
 		</div>
-		
-    </div>
-    
-  </div>
-  <div id='tab3'>
-    <p><b class="container">Export/Import.</b></p>
-    <div class="DTTT_container">
-		<a id="Export_button" class="DTTT_button DTTT_button_text" onClick="">
-			<span>Export</span>
-		</a>
-		<a id="Import_button" class="DTTT_button DTTT_button_text" onClick="">
-			<span>Import</span>
-		</a>
-	</div>
-  </div>
 
-</div> 
+		<div id="content"></div>
+
+	</div>
+	<div id='tab2'>
+		tab2
+	</div>
+	<div id='tab3'>
+		tab3
+	</div>
+</div>
+
+
+
 </body>
 </html>
 

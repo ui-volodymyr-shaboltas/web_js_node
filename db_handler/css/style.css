@@ -1,17 +1,38 @@
 /*----------------------------------------------
 css settings for HTML div exactCenter
 ------------------------------------------------*/
-@import url(http://fonts.googleapis.com/css?family=Raleway);
+/*@import url(http://fonts.googleapis.com/css?family=Raleway);
 html, body {
 	height: 100%;
 	margin: 0;
-	/*padding: 10;*/
+	padding: 10;
 }
-
+*/
 body {
 font: 90%/1.45em "Helvetica Neue", HelveticaNeue, Helvetica, Verdana, Arial, sans-serif;
 }
- 
+
+div#login {
+	float: left;
+	width: 300px;
+}
+
+div#login h1 {
+    text-align: center;
+}
+
+div#login input {
+
+    width: 200px;
+
+} 
+div#login label {
+    margin: 20px 10px 15px 15px;
+    width: 200px;
+
+} 
+
+
 div#abc{
 width: 100%;
 height: 100%;
@@ -86,15 +107,13 @@ form input[readonly]:focus, form textarea[readonly]:focus {
     z-index: 8040;
 }
 
-/*
-#close{
-    position: absolute;
-    right: -18px;
-    top: -18px;
-	cursor:pointer;
 
+.MyDTTT_container {
+    align-self: center;
+    margin: 10px 15px 12px 25px;
+    text-align: left;
 }
-*/
+
 .ed_del_div {
     width: 130px;
 
