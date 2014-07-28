@@ -26,6 +26,7 @@ html, body {
 }
 
 #content { 
+	padding: 10px;
 	height: 100%;
 	float: left;
 	width: 90%;

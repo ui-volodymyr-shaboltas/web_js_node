@@ -41,10 +41,91 @@ app.get('/getdb', function(req, res){
 			  throw err;
 			});*/
 		} else {
-			var json = {"draw": 1,
-  				"data": rows};
-			console.log('resp: '+JSON.stringify(json));
+			var json = { "draw": 1,
+  						 "data": rows };
+			//console.log('resp: '+JSON.stringify(json));
 			res.send(JSON.stringify(json));
+			//callback(null,result[0].hexcode);
+		}
+		});
+    } else {
+		console.log('tablename is '+tablename);
+	}
+});
+
+app.get('/getddlist', function(req, res){
+	var q_id = req.query['query'];
+	console.log('req.id: '+q_id);
+	
+	if (q_id == 1) {
+		connection.query('SELECT `ID`, `Name` FROM `dropdownlist` GROUP BY `ID`', gettest=function(err, rowsID) {
+			if (err) {
+				res.send("DB ERROR: "+err);
+				/*connection.rollback(function() {
+				  throw err;
+				});*/
+			} else {
+				var id_res = JSON.stringify(rowsID);
+				console.log(id_res);
+				res.send(id_res);
+			}
+			});
+	} else if (q_id == 2) {
+		connection.query('SELECT `ID`, `Text` FROM `dropdownlist`', function(err, rows) {
+				if (err) {
+					res.send("DB ERROR: "+err);
+				} else {
+					// return rows;
+					res.send(JSON.stringify(rows));
+				}
+			});
+	} else {
+		res.send('undefine');
+	}
+	
+
+
+	
+	// if(tablename) {
+	// 	/*присвой в переменную json твой вывод из базы данных*/
+	// 	connection.query('SELECT * FROM '+tablename, function(err, rows) {
+	// 	if (err) {
+	// 		res.send("DB ERROR: "+err);
+	// 		/*connection.rollback(function() {
+	// 		  throw err;
+	// 		});*/
+	// 	} else {
+	// 		var json = { "draw": 1,
+ //  						 "data": rows };
+	// 		//console.log('resp: '+JSON.stringify(json));
+	// 		res.send(JSON.stringify(json));
+	// 		//callback(null,result[0].hexcode);
+	// 	}
+	// 	});
+ //    } else {
+	// 	console.log('tablename is '+tablename);
+	// }
+	
+// res.end();
+});
+
+app.get('/getheader', function(req, res){
+	var tablename = req.query['tablename'];
+	console.log('req.tablename: '+tablename);
+	
+	if(tablename) {
+		/*присвой в переменную json твой вывод из базы данных*/
+		connection.query('SELECT * FROM headers WHERE `Table_name`="'+tablename+'"', function(err, rows) {
+		if (err) {
+			res.send("DB ERROR: "+err);
+			/*connection.rollback(function() {
+			  throw err;
+			});*/
+		} else {
+			//var json = { "draw": 1,
+  			//			 "data": rows };
+			//console.log('resp: '+JSON.stringify(json));
+			res.send(JSON.stringify(rows));
 			//callback(null,result[0].hexcode);
 		}
 		});
@@ -59,7 +140,7 @@ app.post('/create', function(req, res) {
 	var jsonArray = JSON.stringify(req.body);
 	console.log('objArray '+jsonArray);
 	var array = typeof jsonArray != 'object' ? JSON.parse(jsonArray) : jsonArray;
-	var recDT_RowId=array['DT_RowDT_RowId'];
+	var recDT_RowId=array['DT_RowId'];
 
 	if (recDT_RowId == 'new' ) {
 		console.log('jsonArray.DT_RowId '+ recDT_RowId);
@@ -96,11 +177,11 @@ app.post('/create', function(req, res) {
 
 		connection.query(q, function (err, results, fields) {
 				if (err) {
-					res.send("DB ERROR: "+err);
+					res.send("ERROR DB: "+err);
 				} else {
-					//var json = JSON.stringify(results);
+					var json = JSON.stringify(results);
 					
-					console.log('insertDT_RowId ', results.insertDT_RowId);
+					console.log('insertDT_RowId ', results.insertId);
 					console.log(json);
 					res.send(JSON.stringify(results));
 				}
@@ -108,7 +189,7 @@ app.post('/create', function(req, res) {
 
 		console.log('req.body.DT_RowId (updated)', recDT_RowId);
 	} else {
-		res.send("Request ERROR...");
+		res.send("ERROR Request...");
 	}
 //res.end();
 });
@@ -126,13 +207,14 @@ app.post('/update', function(req, res) {
 
 	var q = "UPDATE " + tablename + " SET ";
 	
+	var i=0;
 for (var index in array) {
 	//console.log('index '+index);
 	if ( index != 'DT_RowId' ) {
-		if (index != 'CC')
+		if (i > 0)
 			q += ","
 		q += " `"+index+"`=\""+array[index]+"\"";
-		
+		i++;
 	}
 }
 

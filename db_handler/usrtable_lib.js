@@ -1,35 +1,126 @@
 var gtable; // global table variable
-var GDATA;
+var GDATA = [];
+var GDDLIST = [];
+var colvis;
 
 function loadUserTable(tablename){
-	/* $.ajax({
-		type: "GET",
-		url: "/getdb?tablename="+tablename,
-		success: function(data){
-			GDATA=data;
-			//CreateHTMLTableView(data, tablename, 'usertable',true)
-			createUserTable(data, tablename);
+	
+	loadDDListTable();
 
+	$.ajax({
+		type: "GET",
+		url: "/getheader?tablename="+tablename,
+		success: function(data){
+			var result = [];
+			var inputData = $.parseJSON(data);
+			GDATA = inputData
+			// console.log(JSON.stringify(inputData));
+			var strtable = '<div class="container"><table id="'+tablename+'" idTable="'+tablename+'" class="display" cellspacing="0" width="100%">';
+			var strheader = '<thead><tr>';
+			var strfooter = '<tfoot><tr>';
+
+			$.each(inputData, function(i, val) {
+				if(val.Visible == 1) {
+					result[i] = { "data" : val.Name };
+					strheader +='<td alt="'+val.Helper_text+'"">'+val.Label+'</td>';
+					strfooter +='<td><input type="text" placeholder="Search '+val.Label+'" /></td>';
+				}
+			});
+			strheader += '</tr></thead>';
+			strfooter += '</tr></tfoot>';
+			strtable +=  strheader+strfooter+'</table></div>';
+
+			$('#usertable').append(strtable);
+			// console.log(result);
+
+			createUserTable(result, tablename);
+			
 		}
-	});*/
-	var data = {};
-	 createUserTable(data, tablename);
+	});
 	
 }
 
-function createUserTable(xdata, tablename){
+
+function loadDDListTable(){
+	$.ajax({
+		type: "GET",
+		url: "/getddlist?query=1",
+		success: function(data1){
+			var inputData1 = [];
+			if (data1 != 'undefine')
+				inputData1 = $.parseJSON(data1);
+			else 
+				inputData1 = [];
+			
+			// console.log(inputData1);
+			$.ajax({
+				type: "GET",
+				url: "/getddlist?query=2",
+				success: function(data2){
+					var result = {};
+					var key = "";
+					var inputData2 = []; 
+					if (data2 != 'undefine')
+						inputData2 = $.parseJSON(data2);
+					else 
+						inputData2 = [];
+
+					if ( inputData1 != [] && inputData2 != [] ){
+					 	for (var i=0; i<inputData1.length; i++){
+					 		var jsonArr=[];
+					 		for (var j = 0, k=0; j<inputData2.length; j++) {
+					 			if (inputData2[j].ID == inputData1[i].ID) {
+					 				jsonArr[k++] = { "list": inputData2[j].Text };
+					 				// console.log(i, ":", inputData2[j].Text);
+					 			}
+					 		};
+					 		result[inputData1[i].ID] = jsonArr;
+					 		console.log("Loaded: ", jsonArr);
+					 	}
+					GDDLIST=result;
+
+					console.log("Loaded: ",result);
+					} else {
+						console.error("DDlist data not loaded!");
+					}	
+				}
+			});
+			// var arrayOfObj = [];
+
+			// for (item in arrayOfObj.data) {
+			//     if (obj.hasOwnProperty(item)) {
+			//         arrayOfObj.push(arrayOfObj[item]);
+			//     }
+			// }
+			// console.log(arrayOfObj);
+			//GDDLIST = inputData;
+			
+		}
+	});
+	//var data = {};
+	// createUserTable(data, tablename);
+	
+}
+
+
+function createUserTable(columnData, tablename){
 				// Initialise the DataTable
 	/*    table = $('#'+tablename).DataTable( {
 				//lengthChange: false
 			} );*/
-		console.log("test ", xdata);
-	    gtable = $('#myusertable').DataTable( {
-        //"processing": true,
-        //"serverSide": true,
+		//console.log("test ", xdata);
+
+	    gtable = $('#'+tablename).DataTable( {
+        // "processing": true,
+        // "serverSide": true,
         //"ajax": "/data.json",
+        //"scrollY": true,
+        "scrollX": true,
         "ajax": "/getdb?tablename="+tablename,
             //{"DT_RowId":1,"CC":"AM","PTP":3,"DFS":0,"Band":20,"MaxPwr":27,"MaxPwrExt":0,"eirp":0,"min_freq":2412,"max_freq":2472}
-        "columns": [
+        "columns": columnData,
+        "pagingType": "full_numbers"
+       /*/ [
             { "data": "CC" },
             { "data": "PTP" },
             { "data": "DFS" },
@@ -39,7 +130,7 @@ function createUserTable(xdata, tablename){
             { "data": "eirp" },
             { "data": "min_freq" },
             { "data": "max_freq" }
-/*
+
             "columns": [
             { "data": "CC" },
             { "data": "PTP" },
@@ -49,17 +140,22 @@ function createUserTable(xdata, tablename){
             { "data": "Max Pwr Ext" },
             { "data": "EIRP" },
             { "data": "MIN Freq" },
-            { "data": "MAX Freq" }*/
-        ]
+            { "data": "MAX Freq" }
+        ]*/
     } );
-/*		$('#'+tablename+' tfoot th').each( function () {
+    	
+    	colvis = new $.fn.dataTable.ColVis( gtable );
+		// console.log("test ", columnData);
+		/*
+		$('#'+tablename+' tfoot th').each( function () {
 			var self = $(this);
 			var title = $('#'+tablename+' thead th').eq( self.index() ).text();
 			self.html( '<input type="text" placeholder="Search '+title+'" />' );
 		});*/
+
 		//gtable = table;
 		// Apply the filter
-/*		gtable.columns().eq( 0 ).each( function ( colIdx ) {
+		gtable.columns().eq( 0 ).each( function ( colIdx ) {
 			$( 'input', gtable.column( colIdx ).footer() ).on( 'keyup change', function () {
 				//if (colIdx != 0 ) {
 				 gtable
@@ -68,51 +164,54 @@ function createUserTable(xdata, tablename){
 					.draw();
 				//}
 			});
-			//$( 'a').on('click',function(obj) {
-			//	console.log('Pressed<a>', obj);
 
-				 table
+		/*	$( 'a').on('click',function(obj) {
+				console.log('Pressed<a>', obj);
+
+				// table
 					//.column( colIdx )
 					//.search( this.value )
-					.draw();
-			//});
-		});*/
-		/*
+				//	.draw();
+			});*/
+		});
+		
+		
+ 
+    	$( colvis.button() ).insertBefore('div.container');
+
 		var tableTools = new $.fn.dataTable.TableTools( gtable, {
         sRowSelect: "os",
         aButtons: [
         ]
-		} );*/
+		} );
 
 
 		/*$( tableTools.fnContainer() ).insertBefore( '#'+tablename );*/
 		//table.order( [ 1, 'asc' ], [ 2, 'asc' ] ).draw();
 		//new $.fn.dataTable.FixedColumns( table );
-		
-	/*	$('#'+tablename+' tbody').on( 'click', 'tr', function () {
+		/*
+		$('#'+tablename+' tbody').on( 'click', 'tr', function () {
     		console.log( 'Row index: '+gtable.row( this ).index() );
+
 		} );*/
 
 		/*  **** Work with table events **** */
-		/*$('td').on('click',function() {
-               // var col = $(this).parent().children().index($(this));
-               // var row = $(this).parent().parent().children().index($(this).parent());
-               // console.log('Row: ' + row + ', Column: ' + col);
-                if (!document.getElementsByClassName('DTTT_selected').item('td')) {
+		$('#'+tablename+' tbody').on( 'click', 'tr', function () {
+			// console.log('DTTT_UNselected');
+        	// $(this).toggleClass('selected');
+        	if (gtable.rows('.selected', 0)[0][0]) {
 					$('#Edit_button').removeClass("DTTT_disabled");
 					$('#Delete_button').removeClass("DTTT_disabled");
-					// console.log('DTTT_selected');
+					 // console.log('DTTT_selected');
 				} else {
 					$('#Edit_button').addClass("DTTT_disabled");
 					$('#Delete_button').addClass("DTTT_disabled");
-					// console.log('DTTT_UNselected');
+					 // console.log('DTTT_UNselected');
 				}
-                
-                
-        });*/
-    
+   		 } );
+  	  
 }
-
+/*
 function CreateHTMLTableView(objArray, tablename, contentTarget, enableHeader) {
 
     // If the returned data is an object do nothing, else try to parse
@@ -163,57 +262,86 @@ function CreateHTMLTableView(objArray, tablename, contentTarget, enableHeader) {
 
     $('#'+contentTarget).append(str);
 }
-
+*/
 function new_onclick(clicked)
 {
-	var tablename = $( 'table' ).attr('id');
+	var tablename = $('#usertable').find( 'table' ).attr('idTable');
 	
-	var labelData = selectedRowFromTable( tablename, false );
-	edit_form_creator(labelData, tablename, false);
+	//var labelData = gtable.rows(0).data()[0];
+	edit_form_creator(0, tablename, false);
 	
 }
 
 function edit_onclick(clicked)
 {
-	var tablename = $( 'table' ).attr('id');
+	var tablename = $('#usertable').find( 'table' ).attr('idTable');
+	console.log('tablename: '+tablename);
 
 	if (document.getElementsByClassName('DTTT_selected').item('td')) {
-		var selectData = selectedRowFromTable( tablename, true );
-		edit_form_creator(selectData, tablename, true);	
+		var selectIndex = gtable.rows('.selected', 0).data()[0].DT_RowId;
+		//selectedRowFromTable( tablename, true );
+		console.log('selectIndex: '+selectIndex);
+		edit_form_creator(selectIndex, tablename, true);	
 	}
 }
 
-function edit_form_creator(selectData, tablename, edited) {
-	var convData = serializeLocalObject($.parseJSON(selectData));
-	var objArray = [];
-	objArray[0] = JSON.parse(convData);
-	console.log('DT_RowId TABLE: '+tablename);
+function edit_form_creator(selectIndex, tablename, edited) {
+	//var convData = serializeLocalObject($.parseJSON(selectData));
+	var selectData = {};
+	if(edited)
+		selectData = gtable.rows('.selected', 0).data()[0];
+	else
+		selectData = gtable.rows(0).data()[0];
+
+	// console.log('selectData: '+selectData);
+
 
 	//<!-- editor form -->
-	var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-	var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">';
+/*	var array = typeof selectData != 'object' ? JSON.parse(selectData) : selectData;
+	console.log('SelIdx:', selectIndex,'val:',array);
+	*/
 
-	for (var i = 0; i < array.length; i++) {
-		str += '<form id="edit" class="form-container" tablename="'+tablename+'" id_rec="'+array[0].DT_RowId+'"><b>Edit form:</b></br>';
-		//str += (i % 2 == 0) ? '<tr id='+array[i].DT_RowId+'>' : '<tr id='+array[i].DT_RowId+'>';
-		for (var index in array[i]) {
-			console.log(index, ' : ', array[i][index]);
-			switch(index) {
-				case 'DT_RowId':
-					//DO NOTHING
-					break;
-				default:
-					str += '<label for="'+index+'">'+index.replace("</br>","")+': </label>'
-					str += '<input type="text" name="'+index+'" value="'+array[i][index]+'">';
-			}
-		}
+	var str = '<div id="abc" onClick="check(event, \'abc\')"><div class="popupContainer">';
+	str += '<form id="edit" class="DTED_Lightbox_Content" tablename="'+tablename+'" id_rec="'+selectData.DT_RowId+'"><b>Edit form:</b></br>';
+
+	for(var i=0; i<GDATA.length; i++) {
+		str += '<label for="'+GDATA[i].Name+'">'+GDATA[i].Label+': </label>';
+		
 		if(edited)
-			str += '</br><button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
+			if (GDATA[i].DropDownID > 0) {
+				str += '<div class="DTE_Field_Input" data-dte-e="input"><select value="'+selectData[GDATA[i].Name]+'">';
+
+				if( GDDLIST[GDATA[i].DropDownID] ) {
+					for(var k=0; k<GDDLIST[GDATA[i].DropDownID].length; k++){
+						str += '<option value="'+GDDLIST[GDATA[i].DropDownID][k].list+'" ';
+						if (selectData[GDATA[i].Name] == GDDLIST[GDATA[i].DropDownID][k].list)
+							str +='selected';
+						str +='>'+GDDLIST[GDATA[i].DropDownID][k].list+'</option>';
+					}
+				}
+
+				str += '</select></div>';
+
+			} else {
+				str += '<div class="DTE_Field_Input" data-dte-e="input"><input type="text" name="'+GDATA[i].Name+'" value="'+selectData[GDATA[i].Name]+'"></div>';
+			}
+			
 		else
-			str += '</br><button class="DTTT_button" id="submit" onClick="confirmCreateFormData()">Create</button></form>';
+			str += '<div class="DTE_Field_Input" data-dte-e="input"><input type="text" name="'+GDATA[i].Name+'" value=""></div>';
 	}
 
+/*
+	for (var index in selectData) {
+		console.log('nameCell:', index,'val:', selectData[index]);
+		
+	}*/
+	if(edited)
+		str += '</br><button class="DTTT_button" id="submit" onClick="confirmSubmitFormData()">Submit</button></form>';
+	else
+		str += '</br><button class="DTTT_button" id="submit" onClick="confirmCreateFormData()">Create</button></form>';
+
 	str += '<div class="fancybox-close popupContainer" id="close"> </div></div></div>';
+/*
 	$("#edit").on("click",function(event){
 		var 
 				self = $(this),
@@ -222,16 +350,17 @@ function edit_form_creator(selectData, tablename, edited) {
 	  console.log("The paragraph was clicked. id="+id);
 
 	  
-	});
+	});*/
+
 	popup_show($('#usertable'), str, 'abc');
 }
 
 function delete_onclick(clicked)
 {
-	var tablename = $( 'table' ).attr('id');
+	var tablename = $('#usertable').find( 'table' ).attr('idTable');
 
 	if (document.getElementsByClassName('DTTT_selected').item('td')) {
-		var id = $('#'+tablename).find('tr.DTTT_selected').find('td')[0].parentNode.getAttribute("id_rec");
+		var id = gtable.rows('.selected', 0).data()[0].DT_RowId;
 		deleteData(id, tablename);
 	}
 }
@@ -284,7 +413,7 @@ function updateData(id, objArr, tablename)
 	var agree=confirm("Are you sure you wish to continue?");
 
 	if (agree) {
-		updateSelectedRow(id, objArr, tablename);
+		/*updateSelectedRow(id, objArr, tablename);*/
 		$.extend(objArr, {DT_RowId: id});
 		//console.log('objArr ', objArr);
 		$.ajax({
@@ -293,7 +422,24 @@ function updateData(id, objArr, tablename)
 			data : objArr,
 			success: function(data, textStatus, jqXHR)
 			{
-				//data - response from server
+				var updateArr=JSON.stringify(objArr);
+				id = gtable.rows('.selected', 0);
+				console.log('id:', id,' objArr updated in TABLE: '+objArr);
+
+
+				var d = gtable.row(id).data(); console.log(d);
+				//console.log(objArr);
+				// d.dfs="XXX";
+				for(var index in d){
+					d[index]=objArr[index];
+				}
+				// gtable.rows('.selected', 0).data()[0]=
+				// gtable.data($.parseJSON(updateArr))[id].draw();
+
+					gtable
+			        .row( id )
+			        .data( d )
+			        .draw();
 			},
 			error: function (jqXHR, textStatus, errorThrown)
 			{
@@ -306,9 +452,19 @@ function updateData(id, objArr, tablename)
 function confirmCreateFormData()
 {
 	var str = $( "form" ).serializeObject();
-	var id = $( "form" ).attr('id_rec');
+	var id = 'new';
 	var tablename = $( "form" ).attr('tablename');
 	createData(id, str, tablename);
+}
+
+function cells_counter () {
+	var arr = gtable.row(0).data(); 
+	var i=0; 
+	
+	for(var index in arr){
+    	i++;
+  	}; 
+  	return i;
 }
 
 function createData(id, objArr, tablename)
@@ -316,47 +472,27 @@ function createData(id, objArr, tablename)
 	var agree=confirm("Are you sure you wish to continue?");
 
 	if (agree) {
-		//updateSelectedRow(id, objArr, tablename);
 		$.extend(objArr, {DT_RowId: id});
-		//console.log('objArr ', objArr);
 		$.ajax({
 			url : "/create?tablename="+tablename,
 			type: "POST",
 			data : objArr,
 			success: function(data, textStatus, jqXHR)
 			{
-				var newData = [];
-				var cells_count = document.getElementsByTagName('thead').item('tr').children[0].children.length;
+
+				var cells_count = cells_counter(); //document.getElementsByTagName('thead').item('tr').children[0].children.length;
 				var array = typeof data != 'object' ? JSON.parse(data) : data;
-				//console.log('data - response from server: ', data);
-				//console.log('data.insertId - response from server: ', array.insertId);
-				//id = array.insertId;
+
 				objArr.DT_RowId = array.insertId;
-        		var str ='<tr id_rec="'+ objArr.DT_RowId +'">';
-
-				for (var i=0; i<cells_count; i++) {
-					var nameCell = document.getElementsByTagName('thead').item('tr').children[0].children[i].textContent;
-					//if (index != 'DT_RowId' ) //console.log("id= "+array[i].DT_RowId);
-						str += '<td>' + objArr[nameCell] + '</td>';
-						newData[i]=objArr[nameCell];
-		            //else
-					//	str +='';
-					//console.log(nameCell,":", objArr[nameCell]);
-				}
-		        str += '</tr>';
-				console.log('Str: ', str);
-
-				//gtable.$('#tbody').add(str);
-				//gtable.row.data( ["0AM", "3", "0", "120", "127", "0", "0", "2412", "2472"] ).draw();
-				console.log('newData updated in TABLE: '+newData);
-				var rowNode = table
-				    .row.add( newData )
-				    .draw()
-				    .node();
-				 
+				console.log('newData updated in TABLE: '+objArr);
+				var rowNode = gtable
+				    .row.add( objArr )
+				    .draw();
+				 /*    .node();
+				
 				$( rowNode )
 				    .css( 'color', 'red' )
-				    .animate( { color: 'black' } );
+				    .animate( { color: 'black' } );*/
 
 				//data - response from server
 			},
@@ -380,8 +516,8 @@ function deleteData(id, tablename)
 			data : {DT_RowId: id},
 			success: function(data, textStatus, jqXHR)
 			{
-				gtable.$('tr.DTTT_selected').remove();
-				
+				//gtable.$('tr.DTTT_selected').remove();
+				gtable.rows('.selected', 0).remove().draw()
 				//data - response from server
 			},
 			error: function (jqXHR, textStatus, errorThrown)
@@ -395,7 +531,7 @@ function deleteData(id, tablename)
 		
 	}
 }
-
+/*
 
 function updateSelectedRow(id, array, tablename) {
 	var i = 0;
@@ -403,7 +539,7 @@ function updateSelectedRow(id, array, tablename) {
 		document.getElementsByClassName('DTTT_selected').item('tr').children[i].textContent = array[index];
 		i++;
 	}
-};
+};*/
 
 /* ************* POPUP ************* */
 

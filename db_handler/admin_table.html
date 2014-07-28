@@ -13,53 +13,55 @@
 	<link rel="stylesheet" type="text/css" href="/css/style.css">
 	<link rel="stylesheet" type="text/css" href="/css/dataTables.tableTools.css">
 
-	<script type="text/javascript" language="javascript" src="usrtable.js"></script>
+	<script type="text/javascript" language="javascript" src="admin_table.js"></script>
 
 </head>
 
 <body>
+
 <div class="DTTT_container">
-			<a id="New_button" class="DTTT_button DTTT_button_text" onClick="new_onclick(this)">
+			<a id="New_button" class="DTTT_button DTTT_button_text" onClick="adm_new_onclick(this)">
 			<span>New</span>
 			</a>
-			<a id="Edit_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="edit_onclick(this)">
+			<a id="Edit_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="adm_edit_onclick(this)">
 			<span>Edit</span>
 			</a>
-			<a id="Delete_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="delete_onclick(this)">
+			<a id="Delete_button" class="DTTT_button DTTT_button_text DTTT_disabled" onClick="adm_delete_onclick(this)">
 			<span>Delete</span>
 			</a>
 		</div>
-    <div id="usertable">
-<!--
-<table id="regulatory" class="display" cellspacing="0" width="100%">
+
+    <div id="edittable">
+
+<table id="admintable" idTable="admintable" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
-				<th>CC</th>
-				<th>PTP</th>
-				<th>DFS</th>
-				<th>Bandwidth</th>
-				<th>Max Pwr</th>
-				<th>Max Pwr Ext</th>
-				<th>EIRP</th>
-				<th>MIN Freq.</th>
-				<th>MAX Freq.</th>
+				<th>Priority</th>
+				<th>Table_name</th>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Helper_text</th>
+				<th>Type</th>
+				<th>Visible</th>
+				<th>Validation_rule</th>
+				<th>DropDownID</th>
             </tr>
         </thead>
  
         <tfoot>
             <tr>
-				<th>CC</th>
-				<th>PTP</th>
-				<th>DFS</th>
-				<th>Bandwidth</th>
-				<th>Max Pwr</th>
-				<th>Max Pwr Ext</th>
-				<th>EIRP</th>
-				<th>MIN Freq.</th>
-				<th>MAX Freq.</th>
+				<th>Priority</th>
+				<th>Table_name</th>
+				<th>Name</th>
+				<th>Label</th>
+				<th>Helper_text</th>
+				<th>Type</th>
+				<th>Visible</th>
+				<th>Validation_rule</th>
+				<th>DropDownID</th>
             </tr>
         </tfoot>
-    </table>-->
+    </table>
 
 	</div> 
 </body>
