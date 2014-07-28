@@ -4,12 +4,24 @@ var path = require('path');
 //var favicon = require('static-favicon');
 var logger = require('morgan');
 //var cookieParser = require('cookie-parser');
+
+// function authorize(username, password) {
+//     return 'someone' === username & 'password' === password;
+// }
+
 var express = require('express')
   , bodyParser = require('body-parser')
   , app = express()
+  // , app = express.createServer(express.basicAuth(authorize))
   , json = require('json')
-  , server = require('http').createServer(app)
+  // , server = require('http').createServer(app)
 ;
+
+// app.get('/', function(request, response) {
+//     response.send('Authorized!');
+// });
+
+console.log('Starting server...')
 
 var router = express.Router()
 
@@ -27,6 +39,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.get('/getdb', function(req, res){
 	var tablename = req.query['tablename'];
@@ -265,5 +278,5 @@ app.post('/delete', function(req, res) {
 res.end();
 
 });
-
-server.listen(8080);
+app.listen(8080);
+// server.listen(8080);
