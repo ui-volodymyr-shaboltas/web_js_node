@@ -1,4 +1,4 @@
-# install nodejs via packages
+# install nodejs via modules
 
 sudo apt-get install nodejs-legacy
 
